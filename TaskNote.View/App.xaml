@@ -1,0 +1,39 @@
+﻿<Application
+    x:Class="TaskNote.View.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:TaskNote.View"
+    ShutdownMode="OnExplicitShutdown">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/TaskNote.Theme;component/DefaultStyles.xaml" />
+                <!--<ResourceDictionary>
+                    <vm1:ViewModelLocator x:Key="Locator" />
+
+                </ResourceDictionary>-->
+                <ResourceDictionary>
+                    <!--#region Window窗体的样式-->
+                    <Style x:Key="WindowDefauleStyle" TargetType="Window">
+                        <Setter Property="Background" Value="{x:Null}" />
+                        <Setter Property="WindowStyle" Value="None" />
+                        <Setter Property="ResizeMode" Value="CanResizeWithGrip" />
+                        <Setter Property="AllowsTransparency" Value="True" />
+                    </Style>
+                    <!--#endregion-->
+                </ResourceDictionary>
+
+                <ResourceDictionary>
+                    <Style TargetType="{x:Type TextElement}">
+                        <Setter Property="FontFamily" Value="Microsoft YaHei" />
+                        <Setter Property="FontSize" Value="12" />
+                    </Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="FontFamily" Value="Microsoft YaHei" />
+                        <Setter Property="FontSize" Value="13" />
+                    </Style>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
