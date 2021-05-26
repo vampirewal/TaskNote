@@ -26,6 +26,7 @@ namespace TaskNote.Core.SimpleMVVM
         public ViewModelBase()
         {
             InitData();
+            
         }
         /// <summary>
         /// 判断是不是设计器模式
@@ -34,6 +35,7 @@ namespace TaskNote.Core.SimpleMVVM
         {
             get { return DesignerProperties.GetIsInDesignMode(new DependencyObject()); }
         }
+
 
         /// <summary>
         /// 目标View

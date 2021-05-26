@@ -25,7 +25,7 @@ namespace TaskNote.Core.DataBaseContext
 {
     public class BaseDbContext:DbContext, IDataContext
     {
-        public BaseDbContext()
+        public BaseDbContext():base()
         {
             //构造函数
         }

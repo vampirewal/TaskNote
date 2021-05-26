@@ -4,7 +4,13 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>Assets\Image\timeWork.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\Image\timeWork.ico" />
+    <None Remove="Assets\Image\时钟.png" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
@@ -15,6 +21,11 @@
     <ProjectReference Include="..\TaskNote.SimpleMVVM\TaskNote.SimpleMVVM.csproj" />
     <ProjectReference Include="..\TaskNote.Theme\TaskNote.Theme.csproj" />
     <ProjectReference Include="..\TaskNote.ViewModel\TaskNote.ViewModel.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\Image\timeWork.ico" />
+    <Resource Include="Assets\Image\时钟.png" />
   </ItemGroup>
 
 </Project>

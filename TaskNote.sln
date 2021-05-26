@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskNote.ViewModel", "TaskN
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskNote.Core", "TaskNote.Core\TaskNote.Core.csproj", "{65420BD9-B7AB-4885-906D-E36FED76AB86}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskNote.SimpleMVVM", "TaskNote.SimpleMVVM\TaskNote.SimpleMVVM.csproj", "{D73CB6D1-AECA-4910-AB45-2F2F841EC373}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{D9D75D88-5156-4B36-B18E-4AE1713E5F32}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskNote.Theme", "TaskNote.Theme\TaskNote.Theme.csproj", "{5DD89005-0D70-4359-8AE7-170CAA6407E8}"
@@ -18,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskNote.DataAccess", "TaskNote.DataAccess\TaskNote.DataAccess.csproj", "{FF98A22D-0CB1-4934-80FF-4868ECA8AE4F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskNote.Model", "TaskNote.Model\TaskNote.Model.csproj", "{0215D566-6D83-4814-BD47-F945119F0EFA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskNote.SimpleMVVM", "TaskNote.SimpleMVVM\TaskNote.SimpleMVVM.csproj", "{7F296277-D870-4620-89AF-B71804D925F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,10 +37,6 @@ Global
 		{65420BD9-B7AB-4885-906D-E36FED76AB86}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{65420BD9-B7AB-4885-906D-E36FED76AB86}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{65420BD9-B7AB-4885-906D-E36FED76AB86}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D73CB6D1-AECA-4910-AB45-2F2F841EC373}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D73CB6D1-AECA-4910-AB45-2F2F841EC373}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D73CB6D1-AECA-4910-AB45-2F2F841EC373}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D73CB6D1-AECA-4910-AB45-2F2F841EC373}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5DD89005-0D70-4359-8AE7-170CAA6407E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5DD89005-0D70-4359-8AE7-170CAA6407E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DD89005-0D70-4359-8AE7-170CAA6407E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -53,13 +49,17 @@ Global
 		{0215D566-6D83-4814-BD47-F945119F0EFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0215D566-6D83-4814-BD47-F945119F0EFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0215D566-6D83-4814-BD47-F945119F0EFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F296277-D870-4620-89AF-B71804D925F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F296277-D870-4620-89AF-B71804D925F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F296277-D870-4620-89AF-B71804D925F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F296277-D870-4620-89AF-B71804D925F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{65420BD9-B7AB-4885-906D-E36FED76AB86} = {D9D75D88-5156-4B36-B18E-4AE1713E5F32}
-		{D73CB6D1-AECA-4910-AB45-2F2F841EC373} = {D9D75D88-5156-4B36-B18E-4AE1713E5F32}
+		{7F296277-D870-4620-89AF-B71804D925F5} = {D9D75D88-5156-4B36-B18E-4AE1713E5F32}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {172D1E9D-1FDC-46A9-91A0-A8F124E324A8}

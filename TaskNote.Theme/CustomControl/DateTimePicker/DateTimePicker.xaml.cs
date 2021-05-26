@@ -11,7 +11,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace TaskNote.Themes
+namespace TaskNote.Theme
 {
     /// <summary>
     /// DateTimePicker.xaml 的交互逻辑

@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TaskNote.Core\TaskNote.Core.csproj" />
+    <ProjectReference Include="..\TaskNote.Model\TaskNote.Model.csproj" />
   </ItemGroup>
 
 </Project>

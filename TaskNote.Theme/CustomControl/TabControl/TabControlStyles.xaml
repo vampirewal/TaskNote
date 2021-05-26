@@ -87,7 +87,7 @@
                                             x:Name="rt"
                                             Grid.Row="1"
                                             Height="2"
-                                            Fill="{StaticResource MainColor}"
+                                            Fill="{StaticResource BaseForeground}"
                                             Visibility="Hidden" />
                                     </Grid>
                                 </Border>
@@ -96,7 +96,7 @@
                                 <Trigger Property="IsSelected" Value="true">
                                     <Setter Property="Panel.ZIndex" Value="1" />
                                     <Setter TargetName="rt" Property="Visibility" Value="Visible" />
-                                    <Setter Property="Foreground" Value="{StaticResource MainColor}" />
+                                    <Setter Property="Foreground" Value="{StaticResource BaseForeground}" />
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>

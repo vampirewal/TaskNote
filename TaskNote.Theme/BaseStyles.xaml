@@ -3,14 +3,12 @@
         <ResourceDictionary>
             <SolidColorBrush x:Key="BaseBackground" Color="#2F3437" />
             <SolidColorBrush x:Key="BaseBackground2" Color="#EB5757" />
-            <SolidColorBrush x:Key="DefaultButtonColor" Color="#74787c" />
-            <SolidColorBrush x:Key="MainColor" Color="#e0861a" />
-            <SolidColorBrush x:Key="TopTitleColor" Color="#0f0f2d" />
-            <SolidColorBrush x:Key="BackgroundColor" Color="#181735" />
-            <SolidColorBrush x:Key="TextColor1" Color="#fe6584" />
-            <SolidColorBrush x:Key="TextColor2" Color="#ff4c70" />
-            <SolidColorBrush x:Key="Color3" Color="#393850" />
-            <SolidColorBrush x:Key="Color4" Color="#3a3952" />
+            <SolidColorBrush x:Key="BaseBackground3" Color="#373C3F" />
+            <SolidColorBrush x:Key="BaseForeground" Color="#EBEBEB" />
+            <SolidColorBrush x:Key="DefaultButtonColor" Color="#474C50" />
+            <SolidColorBrush x:Key="BtnMouseOverForegroundColor" Color="#E2E3E3" />
+            <SolidColorBrush x:Key="ToolTipBackground" Color="#3F4447" />
+
         </ResourceDictionary>
 
         <ResourceDictionary>
@@ -48,6 +46,21 @@
             </Style>
             <!--#endregion-->
 
+            <Style TargetType="ToolTip">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ToolTip">
+                            <Border
+                                Margin="5"
+                                Background="{DynamicResource ToolTipBackground}"
+                                CornerRadius="5"
+                                Style="{DynamicResource BorderOnlyEffect}">
+                                <ContentPresenter Margin="5" />
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
         </ResourceDictionary>
     </ResourceDictionary.MergedDictionaries>

@@ -28,6 +28,22 @@ namespace TaskNote.Core.Interface
         // 摘要:
         //     UpdateEntity
         void UpdateEntity<T>(T entity) where T : TopBase;
-        
+
+        //
+        // 摘要:
+        //     SaveChanges
+        int SaveChanges(bool acceptAllChangesOnSuccess);
+        //
+        // 摘要:
+        //     SaveChanges
+        int SaveChanges();
+        //
+        // 摘要:
+        //     SaveChangesAsync
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+        //
+        // 摘要:
+        //     SaveChangesAsync
+        Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default);
     }
 }

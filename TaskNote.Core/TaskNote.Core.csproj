@@ -12,4 +12,12 @@
     <PackageReference Include="System.Composition.Hosting" Version="5.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="SimpleMVVM\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TaskNote.SimpleMVVM\TaskNote.SimpleMVVM.csproj" />
+  </ItemGroup>
+
 </Project>

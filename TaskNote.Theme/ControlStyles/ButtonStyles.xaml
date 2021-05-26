@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:TaskNote.Themes">
+    xmlns:local="clr-namespace:TaskNote.Theme">
 
 
     <ResourceDictionary.MergedDictionaries>
@@ -64,13 +64,14 @@
             <Style x:Key="WindowControlButtonStyle" TargetType="Button">
                 <Setter Property="Width" Value="40" />
                 <Setter Property="Height" Value="30" />
-                <Setter Property="Foreground" Value="{StaticResource DefaultButtonColor}" />
+                <Setter Property="Foreground" Value="#74787C" />
                 <Setter Property="Cursor" Value="Hand" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
                             <Border Name="back" Background="Transparent">
                                 <TextBlock
+                                    Name="ShowIcon"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
                                     FontFamily="../Assets/Fonts/#iconfont"
@@ -80,9 +81,11 @@
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Setter TargetName="back" Property="Background" Value="#22ffffff" />
+                                    <Setter TargetName="ShowIcon" Property="Foreground" Value="white" />
                                 </Trigger>
                                 <Trigger Property="IsPressed" Value="True">
                                     <Setter TargetName="back" Property="Background" Value="#44ffffff" />
+                                    <Setter TargetName="ShowIcon" Property="Foreground" Value="white" />
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -114,7 +117,7 @@
 
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Foreground" Value="{StaticResource MainColor}" />
+                                    <Setter Property="Foreground" Value="{StaticResource BaseForeground}" />
                                     <Setter Property="FontSize" Value="18" />
                                 </Trigger>
                             </ControlTemplate.Triggers>
@@ -217,7 +220,7 @@
 
             <!--#region 渐变色按钮-->
 
-            <Style TargetType="local:GradualColorButton">
+            <!--<Style TargetType="local:GradualColorButton">
                 <Setter Property="Foreground" Value="White" />
                 <Setter Property="Cursor" Value="Hand" />
                 <Setter Property="Template">
@@ -254,8 +257,50 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
-            </Style>
+            </Style>-->
             <!--#endregion-->
+
+            <Style x:Key="TransparentButtonHaveThinkAndIcon" TargetType="Button">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="Margin" Value="2,0" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="FontSize" Value="15" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border 
+                                Width="{TemplateBinding Width}"
+                                Height="{TemplateBinding Width}"
+                                Background="{TemplateBinding Background}"
+                                BorderThickness="0"
+                                CornerRadius="3"
+                                Style="{DynamicResource BorderOnlyEffect}">
+                                <TextBlock
+                                    Name="icon"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontFamily="../Assets/Fonts/#iconfont"
+                                    FontSize="{TemplateBinding FontSize}"
+                                    Foreground="{StaticResource DefaultButtonColor}"
+                                    Text="{TemplateBinding Content}" />
+                            </Border>
+
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource DefaultButtonColor}" />
+                                    <Setter Property="Foreground" Value="{StaticResource BaseForeground}" />
+                                    <Setter TargetName="icon" Property="Foreground" Value="{StaticResource BaseForeground}" />
+                                    <Setter Property="FontSize" Value="15" />
+
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

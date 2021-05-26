@@ -18,16 +18,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaskNote.Core.DataBaseContext;
+using TaskNote.Model;
 
 namespace TaskNote.DataAccess
 {
-    public class TaskNoteDataAccess : BaseDbContext
+    public class TaskNoteDataAccess : DbContext
     {
         public TaskNoteDataAccess()
         {
             //构造函数
         }
 
+        public DbSet<User> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

@@ -18,10 +18,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TaskNote.Core.SimpleMVVM;
 
 namespace TaskNote.Core.Models
 {
-    public class TopBase
+    public class TopBase:NotifyBase
     {
         public TopBase()
         {
@@ -29,25 +30,26 @@ namespace TaskNote.Core.Models
         }
 
         #region 属性
-        private Guid _id;
+        private string _id;
 
         /// <summary>
         /// Id
         /// </summary>
         [Key]
-        public Guid ID
+        public string ID
         {
             get
             {
-                if (_id == Guid.Empty)
+                if (_id == Guid.Empty.ToString())
                 {
-                    _id = Guid.NewGuid();
+                    _id = Guid.NewGuid().ToString();
                 }
                 return _id;
             }
             set
             {
                 _id = value;
+                DoNotify();
             }
         }
         #endregion

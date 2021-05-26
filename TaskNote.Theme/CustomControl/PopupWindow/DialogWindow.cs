@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 
-namespace TaskNote.Themes
+namespace TaskNote.Theme
 {
     /// <summary>
     /// 自定义弹出提示框

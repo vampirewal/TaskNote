@@ -23,7 +23,7 @@ using TaskNote.Core.Models;
 namespace TaskNote.Model
 {
     [Table("User")]
-    public class User:TopBase
+    public class User : TopBase
     {
         public User()
         {
@@ -31,11 +31,48 @@ namespace TaskNote.Model
         }
 
         #region 属性
-        [Display(Name ="用户姓名")]
-        public string UserName { get; set; }
+        private string userName;
+        [Display(Name = "用户姓名")]
+        [Column("UserName")]
+        public string UserName { get => userName; set { userName = value; DoNotify(); } }
 
+        private string password;
         [Display(Name = "用户密码")]
-        public string Password { get; set; }
+        [Column("Password")]
+        public string Password { get => password; set { password = value; DoNotify(); } }
+
+        private bool _IsRemember;
+        /// <summary>
+        /// 是否记住密码，0是不记住，1是记住
+        /// </summary>
+        [Column("IsRemember")]
+        public bool IsRemember
+        {
+            get { return _IsRemember; }
+            set { _IsRemember = value; DoNotify(); }
+        }
+
+        private bool _IsLogin;
+        
+        /// <summary>
+        /// 是否登陆
+        /// </summary>
+        [Column("IsLogin")]
+        public bool IsLogin
+        {
+            get { return _IsLogin; }
+            set { _IsLogin = value; DoNotify(); }
+        }
+
+
+        public void ClearInfo()
+        {
+            this.ID = Guid.Empty.ToString();
+            this.UserName = string.Empty;
+            this.Password = string.Empty;
+            this.IsRemember = false;
+            this.IsLogin = false;
+        }
         #endregion
 
         #region 公共方法

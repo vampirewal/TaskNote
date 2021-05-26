@@ -13,7 +13,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace TaskNote.Themes
+namespace TaskNote.Theme
 {
     /// <summary>
     /// NotifyWindow.xaml 的交互逻辑

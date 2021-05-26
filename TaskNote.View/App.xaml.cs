@@ -27,7 +27,7 @@ namespace TaskNote.View
 
             if (Convert.ToBoolean(WindowsManager.CreateDialogWindowByViewModelResult(new LoginView(), new LoginViewModel())))
             {
-                //WindowsManager.CreateWindow("MainWindow", ShowMode.Dialog, new MainViewModel());
+                WindowsManager.CreateWindow("MainView", ShowMode.Dialog, new MainViewModel());
             }
         }
     }
