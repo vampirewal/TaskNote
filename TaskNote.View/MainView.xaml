@@ -234,6 +234,9 @@
                                         <RowDefinition Height="auto" />
                                     </Grid.RowDefinitions>
                                     <Grid Width="200">
+                                        <Grid.ToolTip>
+                                            <TextBlock Foreground="{StaticResource BaseForeground}" Text="此处显示 准备开始和正在做 的任务" />
+                                        </Grid.ToolTip>
                                         <Grid.Style>
                                             <Style TargetType="Grid">
                                                 <Setter Property="Background" Value="Transparent" />

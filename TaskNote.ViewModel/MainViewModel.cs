@@ -103,8 +103,16 @@ namespace TaskNote.ViewModel
         {
             Task.Run(() =>
             {
-                Thread.Sleep(1000);
-                IsHideBtnRightMenu = !IsHideBtnRightMenu;
+                if (!IsHideBtnRightMenu)
+                {
+                    Thread.Sleep(1000);
+                    IsHideBtnRightMenu = !IsHideBtnRightMenu;
+                }
+                else
+                {
+                    IsHideBtnRightMenu = !IsHideBtnRightMenu;
+                }
+                
             });
             
         });

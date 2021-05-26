@@ -27,6 +27,7 @@ namespace TaskNote.Core.Models
         public TopBase()
         {
             //构造函数
+            IsDelete = false;
         }
 
         #region 属性
@@ -40,7 +41,7 @@ namespace TaskNote.Core.Models
         {
             get
             {
-                if (_id == Guid.Empty.ToString())
+                if (string.IsNullOrEmpty( _id)  )
                 {
                     _id = Guid.NewGuid().ToString();
                 }
@@ -52,10 +53,34 @@ namespace TaskNote.Core.Models
                 DoNotify();
             }
         }
+
+        private DateTime _CreateTime;
+        [Column("CreateTime")]
+        public DateTime CreateTime
+        {
+            get
+            {
+                if (_CreateTime==null)
+                {
+                    _CreateTime = DateTime.Now;
+                }
+                return _CreateTime;
+            }
+            set { _CreateTime = value; DoNotify(); }
+        }
+
+        private bool _IsDelete;
+        [Column("IsDelete")]
+        public bool IsDelete
+        {
+            get { return _IsDelete; }
+            set { _IsDelete = value; DoNotify(); }
+        }
+
         #endregion
 
         #region 公共方法
-        
+
         public object GetID()
         {
             var idpro = this.GetType().GetProperties().Where(x => x.Name.ToLower() == "id").FirstOrDefault();

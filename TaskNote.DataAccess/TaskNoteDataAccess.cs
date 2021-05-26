@@ -31,6 +31,12 @@ namespace TaskNote.DataAccess
 
         public DbSet<User> Users { get; set; }
 
+        public DbSet<TaskModel> TaskS { get; set; }
+
+        public DbSet<TaskDtlModel> TaskDtl { get; set; }
+
+        public DbSet<TaskGroup> TaskGroups { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);

@@ -24,7 +24,7 @@ using TaskNote.Model;
 
 namespace TaskNote.ViewModel
 {
-    public class LoginViewModel: ViewModelBase
+    public class LoginViewModel : ViewModelBase
     {
         public LoginViewModel()
         {
@@ -40,6 +40,8 @@ namespace TaskNote.ViewModel
         });
 
         private bool isLogin = false;
+        
+
         public override object GetResult()
         {
             return isLogin;
@@ -48,20 +50,16 @@ namespace TaskNote.ViewModel
         public override void InitData()
         {
             HaveLoginUserName = new ObservableCollection<User>();
+            CurrentUser = new User();
             MessengerRegister();
             GetLoginName();
-            //CurrentUser = new User()
-            //{ 
-            //UserName="yc",
-            //Password="123"
-            //};
 
-            
         }
         #endregion
 
         #region 属性
-        public User CurrentUser { get; set; }
+        private User currentUser;
+        public User CurrentUser { get => currentUser; set { currentUser = value; DoNotify(); } }
 
         public ObservableCollection<User> HaveLoginUserName { get; set; }
         #endregion
@@ -77,7 +75,7 @@ namespace TaskNote.ViewModel
         #region 命令
         public RelayCommand LoginCommand => new RelayCommand(() =>
         {
-            
+
             //var user= DC.Set<User>().Where(w => w.UserName == CurrentUser.UserName && w.Password == CurrentUser.Password).FirstOrDefault();
 
             using (TaskNoteDataAccess taskNote = new TaskNoteDataAccess())
@@ -150,7 +148,15 @@ namespace TaskNote.ViewModel
             }
         }
 
+        public RelayCommand RegisterCommand => new RelayCommand(() =>
+        {
+            //Messenger.Default.Send("CreateRegisterView");
+            if (Convert.ToBoolean(WindowsManager.CreateDialogWindowByViewModelResult("RegisterView", new RegisterViewModel())))
+            {
+                GetLoginName();
+            }
 
+        });
         #endregion
     }
 }
