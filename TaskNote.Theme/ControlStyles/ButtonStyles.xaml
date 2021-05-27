@@ -134,7 +134,10 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
-                            <ContentPresenter Content="{TemplateBinding Content}" />
+                            <ContentPresenter
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Content="{TemplateBinding Content}" />
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
@@ -270,7 +273,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
-                            <Border 
+                            <Border
                                 Width="{TemplateBinding Width}"
                                 Height="{TemplateBinding Width}"
                                 Background="{TemplateBinding Background}"

@@ -15,6 +15,7 @@ using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Input;
 
 namespace TaskNote.Core.SimpleMVVM
 {
@@ -103,6 +104,11 @@ namespace TaskNote.Core.SimpleMVVM
                 w.DragMove();
             }
         });
+
+        public virtual RelayCommand MouseDownCommand => new RelayCommand(() =>
+          {
+              Keyboard.ClearFocus();
+          });
         #endregion
     }
 }

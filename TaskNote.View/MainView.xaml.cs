@@ -22,6 +22,12 @@ namespace TaskNote.View
         public MainView()
         {
             InitializeComponent();
+            
+        }
+
+        private void GridLengthAnimation_Completed(object sender, EventArgs e)
+        {
+            this.bottomInfo.BeginAnimation(RowDefinition.HeightProperty, null);
         }
     }
 }

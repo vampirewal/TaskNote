@@ -31,6 +31,24 @@ namespace TaskNote.Model
         }
 
         #region 属性
+        private string _taskModelID;
+        [Display(Name = "关联Task")]
+        [Column("taskModelID")]
+        public string taskModelID
+        {
+            get { return _taskModelID; }
+            set { _taskModelID = value; DoNotify(); }
+        }
+
+        private TaskModel _taskModel;
+        [Display(Name = "关联Task")]
+        [Column("taskModel")]
+        public TaskModel taskModel
+        {
+            get { return _taskModel; }
+            set { _taskModel = value; DoNotify(); }
+        }
+
         private string _GroupName;
         [Display(Name = "任务组名称")]
         [Column("GroupName")]

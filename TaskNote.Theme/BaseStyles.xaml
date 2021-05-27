@@ -47,6 +47,7 @@
             <!--#endregion-->
 
             <Style TargetType="ToolTip">
+                <Setter Property="Foreground" Value="{StaticResource BaseForeground}" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ToolTip">

@@ -13,6 +13,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -28,6 +29,8 @@ namespace TaskNote.Model
         public TaskModel()
         {
             //构造函数
+            Detail = new ObservableCollection<TaskDtlModel>();
+            fileAttachmentModels = new ObservableCollection<FileAttachmentModel>();
         }
 
         #region 属性
@@ -58,25 +61,7 @@ namespace TaskNote.Model
             set { _User = value; DoNotify(); }
         }
 
-        private string _TaskGroupID;
-        [Display(Name = "关联任务组")]
-        [Column("TaskGroupID")]
-        public string TaskGroupID
-        {
-            get { return _TaskGroupID; }
-            set { _TaskGroupID = value; DoNotify(); }
-        }
-
-        private TaskGroup _taskGroup;
-        [Display(Name = "关联任务组")]
-        [Column("TaskGroup")]
-        public TaskGroup TaskGroup
-        {
-            get { return _taskGroup; }
-            set { _taskGroup = value; DoNotify(); }
-        }
-
-
+        
         private DateTime? _StartTime;
         [Display(Name = "开始时间")]
         [Column("StartTime")]
@@ -94,6 +79,55 @@ namespace TaskNote.Model
             get { return _EndTime; }
             set { _EndTime = value; DoNotify(); }
         }
+
+        private string _TaskDes;
+        [Display(Name = "任务描述")]
+        [Column("TaskDes")]
+        public string TaskDes
+        {
+            get { return _TaskDes; }
+            set { _TaskDes = value; DoNotify(); }
+        }
+
+
+
+        [NotMapped]
+        public ObservableCollection<TaskDtlModel> Detail { get; set; }
+        [NotMapped]
+        public ObservableCollection<FileAttachmentModel> fileAttachmentModels { get; set; }
+
+        [NotMapped]
+        public int NoFinishedTaskDtl
+        {
+            get
+            {
+                if (Detail!=null)
+                {
+                    return Detail.Where(w => w.IsChecked == false).Count();
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+
+        [NotMapped]
+        public int FinishedTaskDtl
+        {
+            get
+            {
+                if (Detail != null)
+                {
+                    return Detail.Where(w => w.IsChecked == true).Count();
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+
         #endregion
 
         #region 公共方法
@@ -129,6 +163,24 @@ namespace TaskNote.Model
         {
             get { return _taskModel; }
             set { _taskModel = value; DoNotify(); }
+        }
+
+        private string _TaskGroupID;
+        [Display(Name = "关联任务组")]
+        [Column("TaskGroupID")]
+        public string TaskGroupID
+        {
+            get { return _TaskGroupID; }
+            set { _TaskGroupID = value; DoNotify(); }
+        }
+
+        private TaskGroup _taskGroup;
+        [Display(Name = "关联任务组")]
+        [Column("TaskGroup")]
+        public TaskGroup TaskGroup
+        {
+            get { return _taskGroup; }
+            set { _taskGroup = value; DoNotify(); }
         }
 
         private string _TaskContext;

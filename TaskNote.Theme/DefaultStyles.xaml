@@ -19,6 +19,7 @@
 
         <ResourceDictionary>
             <converter:BoolToVisibility x:Key="BoolToVisibility" />
+            <converter:DoubletoGridConvert x:Key="DoubletoGridConvert" />
         </ResourceDictionary>
         <ResourceDictionary>
             <FontFamily x:Key="youyuan">

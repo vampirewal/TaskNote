@@ -12,6 +12,7 @@
 #endregion
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,10 +38,13 @@ namespace TaskNote.DataAccess
 
         public DbSet<TaskGroup> TaskGroups { get; set; }
 
+        public DbSet<FileAttachmentModel> fileAttachments { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
             optionsBuilder.UseSqlite("Data Source=TaskNoteDataBase.db");
         }
     }
+
 }
