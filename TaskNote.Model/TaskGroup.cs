@@ -13,6 +13,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -28,6 +29,7 @@ namespace TaskNote.Model
         public TaskGroup()
         {
             //构造函数
+            taskDtlModels = new ObservableCollection<TaskDtlModel>();
         }
 
         #region 属性
@@ -76,6 +78,17 @@ namespace TaskNote.Model
             set { _IsCanDelete = value; DoNotify(); }
         }
 
+        private int _GroupSort;
+        [Display(Name = "排序编号")]
+        [Column("GroupSort")]
+        public int GroupSort
+        {
+            get { return _GroupSort; }
+            set { _GroupSort = value; }
+        }
+
+        [NotMapped]
+        public ObservableCollection<TaskDtlModel> taskDtlModels { get; set; }
         #endregion
 
         #region 公共方法

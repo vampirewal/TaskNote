@@ -31,6 +31,7 @@ namespace TaskNote.Model
             //构造函数
             Detail = new ObservableCollection<TaskDtlModel>();
             fileAttachmentModels = new ObservableCollection<FileAttachmentModel>();
+            TaskGroups = new ObservableCollection<TaskGroup>();
         }
 
         #region 属性
@@ -95,6 +96,8 @@ namespace TaskNote.Model
         public ObservableCollection<TaskDtlModel> Detail { get; set; }
         [NotMapped]
         public ObservableCollection<FileAttachmentModel> fileAttachmentModels { get; set; }
+        [NotMapped]
+        public ObservableCollection<TaskGroup> TaskGroups { get; set; }
 
         [NotMapped]
         public int NoFinishedTaskDtl

@@ -300,7 +300,7 @@
                             Style="{StaticResource Text}"
                             Text="{Binding SelectTaskModel.TaskDes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             TextWrapping="Wrap" />
-                        <Button
+                        <!--<Button
                             Grid.Row="3"
                             Grid.Column="0"
                             Width="100"
@@ -327,17 +327,21 @@
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
-                        </Button>
+                        </Button>-->
                         <Border
                             Grid.Row="3"
-                            Grid.Column="1"
-                            Grid.ColumnSpan="3"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="4"
                             Margin="5"
                             AllowDrop="True"
                             Background="White"
                             BorderThickness="1"
                             CornerRadius="5"
-                            Style="{StaticResource BorderOnlyEffect}" />
+                            Style="{StaticResource BorderOnlyEffect}" >
+                            <ScrollViewer MinHeight="150">
+                                
+                            </ScrollViewer>
+                        </Border>
 
 
                         <Button

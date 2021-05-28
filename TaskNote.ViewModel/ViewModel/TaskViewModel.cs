@@ -107,6 +107,7 @@ namespace TaskNote.ViewModel
         {
             SelectTaskModel.Detail.Clear();
             SelectTaskModel.fileAttachmentModels.Clear();
+            SelectTaskModel.TaskGroups.Clear();
 
             using (TaskNoteDataAccess tn = new TaskNoteDataAccess())
             {
@@ -120,6 +121,11 @@ namespace TaskNote.ViewModel
                 {
                     return;
                 }
+                var currentTaskGroup = tn.TaskGroups.Where(w => w.taskModelID == task.ID)?.ToList();
+                if (currentTaskGroup == null)
+                {
+                    return;
+                }
                 foreach (var item in current)
                 {
                     SelectTaskModel.Detail.Add(item);
@@ -129,6 +135,11 @@ namespace TaskNote.ViewModel
                 {
                     SelectTaskModel.fileAttachmentModels.Add(item);
                 }
+
+                foreach (var item in currentTaskGroup)
+                {
+                    SelectTaskModel.TaskGroups.Add(item);
+                }
             }
         }
 
@@ -137,6 +148,7 @@ namespace TaskNote.ViewModel
         /// </summary>
         private void CreateNewTask()
         {
+            //创建一个TaskModel类
             TaskModel tm = new TaskModel()
             {
                 TaskName = "new",
@@ -147,14 +159,51 @@ namespace TaskNote.ViewModel
                 CreateTime=DateTime.Now,
                 IsDelete=false,
             };
-
+            //插入第1条的位置
             TaskList.Insert(0,tm);
 
+            //创建一个默认的任务组
+            ObservableCollection<TaskGroup> DefaultTaskGroup = new ObservableCollection<TaskGroup>()
+            {
+                new TaskGroup()
+                {
+                    taskModelID=tm.ID,
+                    GroupName="准备去做",
+                    GroupBackgroundColor="#FF00FF",
+                    IsDelete=false,
+                    IsCanDelete=false,
+                    GroupSort=0,
+                    CreateTime=DateTime.Now
+                },
+                new TaskGroup()
+                {
+                    taskModelID=tm.ID,
+                    GroupName="正在做",
+                    GroupBackgroundColor="#CFB53B",
+                    IsDelete=false,
+                    IsCanDelete=false,
+                    GroupSort=0,
+                    CreateTime=DateTime.Now
+                },
+                new TaskGroup()
+                {
+                    taskModelID=tm.ID,
+                    GroupName="已完成",
+                    GroupBackgroundColor="#32CD32",
+                    IsDelete=false,
+                    IsCanDelete=false,
+                    GroupSort=0,
+                    CreateTime=DateTime.Now
+                }
+            };
+
+            tm.TaskGroups = DefaultTaskGroup;
             using (TaskNoteDataAccess tn = new TaskNoteDataAccess())
             {
                 try
                 {
                     tn.Add(tm);
+                    tn.AddRange(DefaultTaskGroup);
                     tn.SaveChanges();
                 }
                 catch (Exception e)
