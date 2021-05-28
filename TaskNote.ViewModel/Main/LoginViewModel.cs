@@ -122,6 +122,16 @@ namespace TaskNote.ViewModel
                 }
             }
         });
+
+        public RelayCommand RegisterCommand => new RelayCommand(() =>
+        {
+            //Messenger.Default.Send("CreateRegisterView");
+            if (Convert.ToBoolean(WindowsManager.CreateDialogWindowByViewModelResult("RegisterView", new RegisterViewModel())))
+            {
+                GetLoginName();
+            }
+
+        });
         #endregion
 
         #region 消息
@@ -148,15 +158,7 @@ namespace TaskNote.ViewModel
             }
         }
 
-        public RelayCommand RegisterCommand => new RelayCommand(() =>
-        {
-            //Messenger.Default.Send("CreateRegisterView");
-            if (Convert.ToBoolean(WindowsManager.CreateDialogWindowByViewModelResult("RegisterView", new RegisterViewModel())))
-            {
-                GetLoginName();
-            }
-
-        });
+        
         #endregion
     }
 }

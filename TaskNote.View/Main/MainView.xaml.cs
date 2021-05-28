@@ -25,9 +25,5 @@ namespace TaskNote.View
             
         }
 
-        private void GridLengthAnimation_Completed(object sender, EventArgs e)
-        {
-            this.bottomInfo.BeginAnimation(RowDefinition.HeightProperty, null);
-        }
     }
 }
