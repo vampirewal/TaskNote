@@ -40,6 +40,9 @@ namespace TaskNote.DataAccess
 
         public DbSet<FileAttachmentModel> fileAttachments { get; set; }
 
+        public DbSet<FolderModel> folders { get; set; }
+        public DbSet<NoteModel> notes { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);

@@ -42,14 +42,23 @@ namespace TaskNote.Model
             set { _taskModelID = value; DoNotify(); }
         }
 
-        private TaskModel _taskModel;
-        [Display(Name = "关联Task")]
-        [Column("taskModel")]
-        public TaskModel taskModel
-        {
-            get { return _taskModel; }
-            set { _taskModel = value; DoNotify(); }
-        }
+        //private string _UserId;
+        //[Display(Name = "关联用户")]
+        //[Column("UserId")]
+        //public string UserId
+        //{
+        //    get { return _UserId; }
+        //    set { _UserId = value; DoNotify(); }
+        //}
+
+        //private TaskModel _taskModel;
+        //[Display(Name = "关联Task")]
+        //[Column("taskModel")]
+        //public TaskModel taskModel
+        //{
+        //    get { return _taskModel; }
+        //    set { _taskModel = value; DoNotify(); }
+        //}
 
         private string _GroupName;
         [Display(Name = "任务组名称")]

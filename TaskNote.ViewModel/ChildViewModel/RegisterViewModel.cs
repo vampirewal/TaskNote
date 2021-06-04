@@ -36,7 +36,6 @@ namespace TaskNote.ViewModel
                 IsLogin = false,
                 IsRemember = false,
                 IsDelete = false,
-                
             };
         }
 
@@ -78,9 +77,23 @@ namespace TaskNote.ViewModel
                   var OldUser = work.Users.FirstOrDefault(f => f.UserName == NewUser.UserName);
                   if (OldUser == null)
                   {
+                      //创建初始化的笔记文件夹
+                      FolderModel noteModel = new FolderModel()
+                      {
+                          CanDelete=false,
+                          IsDelete=false,
+                          UserId= NewUser.ID,
+                          FolderName="文件夹",
+                          ParentId="0",
+                          CreateTime=DateTime.Now
+                      };
+
                       NewUser.CreateTime = DateTime.Now;
                       work.Users.Add(NewUser);
-                      work.SaveChanges();
+
+                      work.Add(noteModel);
+                     
+                      work.SaveChangesAsync();
                       isok = true;
                       isRegister = true;
                   }

@@ -63,6 +63,17 @@
                 </Setter>
             </Style>
 
+            <Style
+                x:Key="DiscolorationTranslation_Border"
+                BasedOn="{StaticResource BorderOnlyEffect}"
+                TargetType="Border">
+                <Setter Property="Background" Value="{StaticResource BaseBackground}" />
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{StaticResource BaseBackground3}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

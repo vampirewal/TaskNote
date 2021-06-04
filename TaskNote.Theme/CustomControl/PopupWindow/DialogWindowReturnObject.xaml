@@ -25,7 +25,7 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 FontSize="30"
-                Foreground="{DynamicResource BaseBackground}"
+                Foreground="{DynamicResource BaseForeground}"
                 Text="温馨提示" />
             <Border
                 Margin="5,0"
@@ -39,7 +39,7 @@
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
                 FontSize="18"
-                Foreground="{DynamicResource BaseBackground}"
+                Foreground="{DynamicResource BaseForeground}"
                 Text="neirongaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
                 TextWrapping="Wrap" />
             <Border

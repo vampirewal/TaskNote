@@ -219,7 +219,7 @@
                 VerticalAlignment="Top"
                 Command="{Binding CloseWindowCommand}"
                 CommandParameter="{Binding ElementName=LoginWindow}"
-                Style="{StaticResource CloseWindowButtonStyle}" />
+                Style="{StaticResource CloseWindowButtonStyle}" Cursor="Hand" />
         </Grid>
 
     </Border>

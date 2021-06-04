@@ -135,8 +135,8 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
                             <ContentPresenter
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                 Content="{TemplateBinding Content}" />
                         </ControlTemplate>
                     </Setter.Value>
@@ -295,6 +295,61 @@
                                     <Setter Property="Background" Value="{StaticResource DefaultButtonColor}" />
                                     <Setter Property="Foreground" Value="{StaticResource BaseForeground}" />
                                     <Setter TargetName="icon" Property="Foreground" Value="{StaticResource BaseForeground}" />
+                                    <Setter Property="FontSize" Value="15" />
+
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+
+                </Setter>
+            </Style>
+
+            <Style x:Key="TransparentButtonHaveThinkAndIconAndText" TargetType="Button">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="Margin" Value="2,0" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="FontSize" Value="15" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border
+                                Width="{TemplateBinding Width}"
+                                Height="{TemplateBinding Width}"
+                                Background="{TemplateBinding Background}"
+                                BorderThickness="0"
+                                CornerRadius="3"
+                                Style="{DynamicResource BorderOnlyEffect}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Name="icon"
+                                        Margin="5"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        FontFamily="../Assets/Fonts/#iconfont"
+                                        FontSize="{TemplateBinding FontSize}"
+                                        Foreground="{StaticResource DefaultButtonColor}"
+                                        Text="{TemplateBinding Tag}" />
+                                    <TextBlock
+                                        Name="text"
+                                        Margin="5"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        FontSize="{TemplateBinding FontSize}"
+                                        Foreground="{StaticResource DefaultButtonColor}"
+                                        Text="{TemplateBinding Content}" />
+                                </StackPanel>
+
+                            </Border>
+
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource DefaultButtonColor}" />
+                                    <Setter Property="Foreground" Value="{StaticResource BaseForeground}" />
+                                    <Setter TargetName="icon" Property="Foreground" Value="{StaticResource BaseForeground}" />
+                                    <Setter TargetName="text" Property="Foreground" Value="{StaticResource BaseForeground}" />
                                     <Setter Property="FontSize" Value="15" />
 
                                 </Trigger>

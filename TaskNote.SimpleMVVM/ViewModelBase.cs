@@ -70,6 +70,14 @@ namespace TaskNote.Core.SimpleMVVM
         {
 
         }
+        /// <summary>
+        /// 初始化页面数据，由创建时传递参数
+        /// </summary>
+        /// <param name="obj">传入参数</param>
+        public virtual void PassData(object obj)
+        {
+
+        }
 
         #region 命令
         /// <summary>

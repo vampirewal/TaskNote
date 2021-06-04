@@ -11,6 +11,7 @@
         <ResourceDictionary Source="ControlStyles/TextBlockStyles.xaml" />
         <ResourceDictionary Source="ControlStyles/ItemControlStyle.xaml" />
         <ResourceDictionary Source="ControlStyles/ScrollviewStyles.xaml" />
+        <ResourceDictionary Source="ControlStyles/TreeViewStyles.xaml" />
 
 
         <ResourceDictionary Source="CustomControl/TabControl/TabControlStyles.xaml" />
@@ -19,7 +20,10 @@
 
         <ResourceDictionary>
             <converter:BoolToVisibility x:Key="BoolToVisibility" />
+            <converter:BoolToVisibilityRe x:Key="BoolToVisibilityRe" />
             <converter:DoubletoGridConvert x:Key="DoubletoGridConvert" />
+            <converter:TaskGroupId2ColorConverter x:Key="TaskGroupId2ColorConverter" />
+            <converter:TaskGroupID2TaskGroupNameConverter x:Key="TaskGroupID2TaskGroupNameConverter" />
         </ResourceDictionary>
         <ResourceDictionary>
             <FontFamily x:Key="youyuan">

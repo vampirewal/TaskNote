@@ -1,11 +1,11 @@
 ﻿<UserControl
-    x:Class="TaskNote.TaskView.TaskView"
+    x:Class="TaskNote.View.TabView.TaskView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:hc="https://handyorg.github.io/handycontrol"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-    xmlns:local="clr-namespace:TaskNote.TaskView"
+    xmlns:local="clr-namespace:TaskNote.View.TabView"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -76,7 +76,7 @@
                 </Style>
             </DataGrid.CellStyle>
             <DataGrid.Columns>
-                <DataGridTemplateColumn Width="1*" Header="任务名称">
+                <DataGridTemplateColumn Width="0.7*" Header="任务名称">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Style="{StaticResource CenterTextBlock}" Text="{Binding TaskName}">
@@ -100,24 +100,24 @@
                 </DataGridTemplateColumn>
 
                 <DataGridTextColumn
-                    Width="1*"
+                    Width="0.7*"
                     Binding="{Binding StartTime, StringFormat={}{0:yyyy-MM-dd}}"
                     Header="开始时间"
                     IsReadOnly="True" />
 
                 <DataGridTextColumn
-                    Width="1*"
+                    Width="0.7*"
                     Binding="{Binding EndTime, StringFormat={}{0:yyyy-MM-dd}}"
                     Header="结束时间"
                     IsReadOnly="True" />
 
                 <DataGridTextColumn
-                    Width="1*"
+                    Width="0.8*"
                     Binding="{Binding NoFinishedTaskDtl}"
                     Header="未完成任务明细数"
                     IsReadOnly="True" />
                 <DataGridTextColumn
-                    Width="1*"
+                    Width="0.8*"
                     Binding="{Binding FinishedTaskDtl}"
                     Header="已完成任务明细数"
                     IsReadOnly="True" />
@@ -126,6 +126,20 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
+                                <Button
+                                    Margin="5,0"
+                                    Command="{Binding DataContext.IsImportantCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                                    CommandParameter="{Binding}"
+                                    Content="关注"
+                                    Style="{StaticResource ButtonSuccess}"
+                                    Visibility="{Binding IsImportant, Converter={StaticResource Boolean2VisibilityReConverter}}" />
+                                <Button
+                                    Margin="5,0"
+                                    Command="{Binding DataContext.IsImportantCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                                    CommandParameter="{Binding}"
+                                    Content="取消关注"
+                                    Style="{StaticResource ButtonDanger}"
+                                    Visibility="{Binding IsImportant, Converter={StaticResource Boolean2VisibilityConverter}}" />
                                 <Button
                                     Margin="5,0"
                                     Command="{Binding DataContext.LookTaskInfoCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
@@ -266,6 +280,25 @@
                             Style="{StaticResource Text}"
                             Text="{Binding SelectTaskModel.TaskName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
+                        <StackPanel
+                            Grid.Row="0"
+                            Grid.Column="3"
+                            Orientation="Horizontal">
+                            <Button
+                                Width="100"
+                                Margin="5,0"
+                                Command="{Binding SaveCommand}"
+                                Content="保存"
+                                Style="{StaticResource ButtonSuccess}" />
+                            <Button
+                                Width="100"
+                                Margin="5,0"
+                                Command="{Binding SettingTaskGroupCommand}"
+                                Content="设置任务组"
+                                Style="{StaticResource ButtonSuccess}" />
+                        </StackPanel>
+
+
                         <TextBlock
                             Grid.Row="1"
                             Grid.Column="0"
@@ -335,11 +368,13 @@
                             Grid.Row="3"
                             Grid.Column="1"
                             Grid.ColumnSpan="3"
+                            MaxHeight="300"
                             Margin="5"
                             AllowDrop="True"
                             Background="White"
                             CornerRadius="5"
                             Style="{StaticResource BorderOnlyEffect}">
+
                             <Grid>
                                 <DataGrid
                                     Margin="5,0"
@@ -349,11 +384,14 @@
                                     HeadersVisibility="All"
                                     ItemsSource="{Binding SelectTaskModel.TaskDtls}"
                                     RowHeaderWidth="60"
+                                    SelectedItem="{Binding SelectedTaskDtlModel, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
                                     SelectionMode="Single"
                                     VerticalScrollBarVisibility="Auto">
                                     <DataGrid.Resources>
                                         <ResourceDictionary>
                                             <ResourceDictionary.MergedDictionaries>
+                                                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml" />
+                                                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml" />
                                                 <ResourceDictionary>
                                                     <Style x:Key="TextBlockCenterStyle" TargetType="TextBlock">
                                                         <Setter Property="VerticalAlignment" Value="Center" />
@@ -370,8 +408,29 @@
                                             <Setter Property="HorizontalAlignment" Value="Center" />
                                         </Style>
                                     </DataGrid.ColumnHeaderStyle>
+
+                                    <DataGrid.RowStyle>
+                                        <Style BasedOn="{StaticResource DataGridRowStyle}" TargetType="DataGridRow">
+                                            <Setter Property="Background" Value="{Binding TaskGroupID, Converter={StaticResource TaskGroupId2ColorConverter}}" />
+                                            <Setter Property="Opacity" Value="0.7" />
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="true">
+                                                    <Setter Property="Background" Value="{Binding TaskGroupID, Converter={StaticResource TaskGroupId2ColorConverter}}" />
+                                                    <Setter Property="Opacity" Value="1" />
+                                                </Trigger>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="Opacity" Value="1" />
+                                                    <Setter Property="Background" Value="{Binding TaskGroupID, Converter={StaticResource TaskGroupId2ColorConverter}}" />
+                                                    <Setter Property="Foreground" Value="{DynamicResource TextIconBrush}" />
+                                                </Trigger>
+
+                                            </Style.Triggers>
+
+                                        </Style>
+                                    </DataGrid.RowStyle>
                                     <DataGrid.CellStyle>
                                         <Style TargetType="DataGridCell">
+
                                             <Setter Property="Template">
                                                 <Setter.Value>
                                                     <ControlTemplate TargetType="DataGridCell">
@@ -383,20 +442,38 @@
                                             </Setter>
                                         </Style>
                                     </DataGrid.CellStyle>
-                                    <!--<DataGrid.RowStyle>
-                                        <Style TargetType="DataGridRow">
-                                            <Setter Property="Template">
-                                                <Setter.Value>
-                                                    <ControlTemplate TargetType="DataGridRow">
-                                                        <Border Background="{Binding TaskGroups.}">
-
-                                                        </Border>
-                                                    </ControlTemplate>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </Style>
-                                    </DataGrid.RowStyle>-->
                                     <DataGrid.Columns>
+                                        <!--<DataGridComboBoxColumn
+                                            Width="0.8*"
+                                            DisplayMemberPath="GroupName"
+                                            Header="分类任务组"
+                                            ItemsSource="{Binding DataContext.SelectTaskModel.TaskGroups, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                                            SelectedValueBinding="{Binding TaskGroupID, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />-->
+                                        <DataGridTemplateColumn Width="0.2*" Header="分类任务组">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding TaskGroupID, Converter={StaticResource TaskGroupID2TaskGroupNameConverter}}" />
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                            <DataGridTemplateColumn.CellEditingTemplate>
+                                                <DataTemplate>
+                                                    <ComboBox
+                                                        Name="SelectTaskGroup"
+                                                        Width="100"
+                                                        DisplayMemberPath="GroupName"
+                                                        ItemsSource="{Binding DataContext.SelectTaskModel.TaskGroups, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                                                        SelectedValuePath="ID">
+                                                        <i:Interaction.Triggers>
+                                                            <i:EventTrigger EventName="SelectionChanged">
+                                                                <i:InvokeCommandAction Command="{Binding DataContext.SelectTaskGroupChangedCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" CommandParameter="{Binding ElementName=SelectTaskGroup, Path=SelectedValue}" />
+                                                            </i:EventTrigger>
+                                                        </i:Interaction.Triggers>
+                                                    </ComboBox>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellEditingTemplate>
+                                        </DataGridTemplateColumn>
+
+
                                         <DataGridTemplateColumn Width="1*" Header="内容">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
@@ -416,15 +493,15 @@
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <StackPanel Orientation="Horizontal">
-                                                        <Button
+                                                        <!--<Button
                                                             Margin="5,0"
                                                             Command="{Binding DataContext.DownloadAttachment, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
                                                             CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}, Path=SelectedItem}"
                                                             Content="下载"
                                                             Style="{DynamicResource ButtonSuccess}"
-                                                            ToolTip="直接会保存到桌面" />
+                                                            ToolTip="直接会保存到桌面" />-->
                                                         <Button
-                                                            Command="{Binding DataContext.DeleteAttachmentCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                                                            Command="{Binding DataContext.DeleteTaskDtlCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
                                                             CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}, Path=SelectedItem}"
                                                             Content="删除"
                                                             Style="{DynamicResource ButtonDanger}" />
@@ -472,6 +549,7 @@
                             Grid.Row="4"
                             Grid.Column="1"
                             Grid.ColumnSpan="3"
+                            MaxHeight="300"
                             Margin="5"
                             AllowDrop="True"
                             Background="White"
@@ -493,6 +571,8 @@
                                     <DataGrid.Resources>
                                         <ResourceDictionary>
                                             <ResourceDictionary.MergedDictionaries>
+                                                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml" />
+                                                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml" />
                                                 <ResourceDictionary>
                                                     <Style x:Key="TextBlockCenterStyle" TargetType="TextBlock">
                                                         <Setter Property="VerticalAlignment" Value="Center" />

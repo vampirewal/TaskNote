@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
+using TaskNote.Core;
 using TaskNote.Core.SimpleMVVM;
 using TaskNote.DataAccess;
 using TaskNote.Model;
@@ -61,6 +62,17 @@ namespace TaskNote.ViewModel
             set { _SelectTaskModel = value; DoNotify(); }
         }
 
+        private TaskDtlModel _SelectedTaskDtlModel;
+        /// <summary>
+        /// 被选择的任务明细
+        /// </summary>
+        public TaskDtlModel SelectedTaskDtlModel
+        {
+            get { return _SelectedTaskDtlModel; }
+            set { _SelectedTaskDtlModel = value; DoNotify(); }
+        }
+
+
         public User LoginUserInfo { get; set; }
 
         public ObservableCollection<TaskModel> TaskList { get; set; }
@@ -80,6 +92,7 @@ namespace TaskNote.ViewModel
             using (TaskNoteDataAccess taskNote = new TaskNoteDataAccess())
             {
                 var current = taskNote.TaskS.Where(w => w.UserID == LoginUserInfo.ID).ToList();
+
                 current.Sort((left, right) =>
                 {
                     if (left.CreateTime > right.CreateTime)
@@ -94,6 +107,10 @@ namespace TaskNote.ViewModel
 
                 foreach (var item in current)
                 {
+                    var currentDtl = taskNote.TaskDtl.Where(w => w.taskModelID == item.ID).ToList();
+                    item.FinishedTaskDtl = currentDtl.Where(w => w.IsFinished == true).Count();
+                    item.NoFinishedTaskDtl= currentDtl.Where(w => w.IsFinished == false).Count();
+
                     TaskList.Add(item);
                 }
             }
@@ -108,37 +125,42 @@ namespace TaskNote.ViewModel
             SelectTaskModel.Detail.Clear();
             SelectTaskModel.fileAttachmentModels.Clear();
             SelectTaskModel.TaskGroups.Clear();
+            SelectTaskModel.TaskDtls.Clear();
 
             using (TaskNoteDataAccess tn = new TaskNoteDataAccess())
             {
                 var current = tn.TaskDtl.Where(w => w.taskModelID == task.ID)?.ToList();
-                if (current==null)
+                if (current!=null&& current.Count>0)
                 {
-                    return;
+                    foreach (var item in current)
+                    {
+                        SelectTaskModel.Detail.Add(item);
+                    }
                 }
                 var currentFileAttachments = tn.fileAttachments.Where(w => w.ParentGuidId == task.ID)?.ToList();
-                if (currentFileAttachments == null)
+                if (currentFileAttachments != null&& currentFileAttachments.Count>0)
                 {
-                    return;
+                    foreach (var item in currentFileAttachments)
+                    {
+                        SelectTaskModel.fileAttachmentModels.Add(item);
+                    }
                 }
                 var currentTaskGroup = tn.TaskGroups.Where(w => w.taskModelID == task.ID)?.ToList();
-                if (currentTaskGroup == null)
+                if (currentTaskGroup != null&& currentTaskGroup.Count>0)
                 {
-                    return;
-                }
-                foreach (var item in current)
-                {
-                    SelectTaskModel.Detail.Add(item);
-                }
-
-                foreach (var item in currentFileAttachments)
-                {
-                    SelectTaskModel.fileAttachmentModels.Add(item);
+                    foreach (var item in currentTaskGroup)
+                    {
+                        SelectTaskModel.TaskGroups.Add(item);
+                    }
                 }
 
-                foreach (var item in currentTaskGroup)
+                var currentTaskDtls = tn.TaskDtl.Where(w => w.taskModelID == task.ID)?.ToList();
+                if (currentTaskDtls!=null&& currentTaskDtls.Count>0)
                 {
-                    SelectTaskModel.TaskGroups.Add(item);
+                    foreach (var item in currentTaskDtls)
+                    {
+                        SelectTaskModel.TaskDtls.Add(item);
+                    }
                 }
             }
         }
@@ -154,7 +176,7 @@ namespace TaskNote.ViewModel
                 TaskName = "new",
                 StartTime = DateTime.Now,
                 EndTime = DateTime.Now,
-                
+                IsImportant=false,
                 UserID=LoginUserInfo.ID,
                 CreateTime=DateTime.Now,
                 IsDelete=false,
@@ -169,7 +191,7 @@ namespace TaskNote.ViewModel
                 {
                     taskModelID=tm.ID,
                     GroupName="准备去做",
-                    GroupBackgroundColor="#FF00FF",
+                    GroupBackgroundColor="#FF4040",
                     IsDelete=false,
                     IsCanDelete=false,
                     GroupSort=0,
@@ -182,7 +204,7 @@ namespace TaskNote.ViewModel
                     GroupBackgroundColor="#CFB53B",
                     IsDelete=false,
                     IsCanDelete=false,
-                    GroupSort=0,
+                    GroupSort=1,
                     CreateTime=DateTime.Now
                 },
                 new TaskGroup()
@@ -192,7 +214,7 @@ namespace TaskNote.ViewModel
                     GroupBackgroundColor="#32CD32",
                     IsDelete=false,
                     IsCanDelete=false,
-                    GroupSort=0,
+                    GroupSort=2,
                     CreateTime=DateTime.Now
                 }
             };
@@ -204,7 +226,7 @@ namespace TaskNote.ViewModel
                 {
                     tn.Add(tm);
                     tn.AddRange(DefaultTaskGroup);
-                    tn.SaveChanges();
+                    tn.SaveChangesAsync();
                 }
                 catch (Exception e)
                 {
@@ -227,7 +249,7 @@ namespace TaskNote.ViewModel
                 //给下方的赋值
                 SelectTaskModel = t;
                 GetSelectTaskDtlAndAttachment(t);
-
+                SelectedTaskDtlModel = null;
                 if (IsCollapsed)
                 {
                     //控制界面上的高度
@@ -328,7 +350,7 @@ namespace TaskNote.ViewModel
                                 using (TaskNoteDataAccess work = new TaskNoteDataAccess())
                                 {
                                     work.fileAttachments.Add(fam);
-                                    work.SaveChanges();
+                                    work.SaveChangesAsync();
                                 }
                             }
                         }
@@ -365,7 +387,7 @@ namespace TaskNote.ViewModel
             using (TaskNoteDataAccess work = new TaskNoteDataAccess())
             {
                 work.fileAttachments.Remove(f);
-                work.SaveChanges();
+                work.SaveChangesAsync();
             }
             DialogWindow.Show("已成功将文件删除！", MessageType.Successful, WindowsManager.Windows["MainWindow"]);
         });
@@ -373,7 +395,122 @@ namespace TaskNote.ViewModel
 
         public RelayCommand AddNewTaskDtlCommand => new RelayCommand(() =>
           {
+              TaskDtlModel taskDtl = new TaskDtlModel()
+              {
+                  taskModelID = SelectTaskModel.ID,
+                  TaskGroupID= SelectTaskModel.TaskGroups[0]?.ID,
+                  IsDelete=false,
+                  CreateTime=DateTime.Now,
+                  TaskContext="新任务明细",
+                  IsChecked=false
+              };
 
+              SelectTaskModel.TaskDtls.Add(taskDtl);
+              using(TaskNoteDataAccess task =new TaskNoteDataAccess())
+              {
+                  task.Add(taskDtl);
+                  task.SaveChangesAsync();
+              }
+          });
+
+        /// <summary>
+        /// 将任务放入回收站功能
+        /// </summary>
+        public RelayCommand<TaskModel> RecycleBinTaskCommand => new RelayCommand<TaskModel>((t) =>
+          {
+              if(DialogWindow.ShowDialog($"是否确定将<{t.TaskName}>任务放入回收站？", "请确认"))
+              {
+                  t.IsDelete = true;
+                  using(TaskNoteDataAccess task=new TaskNoteDataAccess())
+                  {
+                      task.Update(t);
+                      task.SaveChangesAsync();
+                  }
+              }
+          });
+
+        /// <summary>
+        /// 保存选择项的数据
+        /// </summary>
+        public RelayCommand SaveCommand => new RelayCommand(() =>
+          {
+              try
+              {
+                  using (TaskNoteDataAccess task = new TaskNoteDataAccess())
+                  {
+                      task.Update(SelectTaskModel);
+                      task.UpdateRange(SelectTaskModel.TaskDtls);
+                      task.UpdateRange(SelectTaskModel.TaskGroups);
+
+                      task.SaveChangesAsync();
+                  }
+                  DialogWindow.Show("保存成功！", MessageType.Successful, WindowsManager.Windows["MainWindow"]);
+              }
+              catch 
+              {
+                  DialogWindow.Show("保存失败！",MessageType.Error,WindowsManager.Windows["MainWindow"]);
+              }
+              
+          });
+
+        public RelayCommand<TaskModel> IsImportantCommand => new RelayCommand<TaskModel>((s) =>
+          {
+              using(TaskNoteDataAccess task=new TaskNoteDataAccess())
+              {
+                  if (s.IsImportant)
+                  {
+                      
+                      Messenger.Default.Send("RemoveFocusTask", s);
+                  }
+                  else
+                  {
+                      Messenger.Default.Send("AddFocusTask", s);
+                  }
+                  s.IsImportant = !s.IsImportant;
+                  task.Update(s);
+                  task.SaveChangesAsync();
+              }
+              
+          });
+
+        public RelayCommand<TaskDtlModel> DeleteTaskDtlCommand => new RelayCommand<TaskDtlModel>((t) =>
+          {
+              if (t!=null)
+              {
+                  if(DialogWindow.ShowDialog("是否确定要删除该任务明细？一经删除无法恢复！", "请确认"))
+                  {
+                      SelectTaskModel.Detail.Remove(t);
+                      using (TaskNoteDataAccess task=new TaskNoteDataAccess())
+                      {
+                          task.Remove(t);
+                          task.SaveChangesAsync();
+                          
+                          DialogWindow.Show("删除成功！", MessageType.Successful, WindowsManager.Windows["MainWindow"]);
+                      }
+                  }
+              }
+          });
+
+
+        public RelayCommand<string> SelectTaskGroupChangedCommand => new RelayCommand<string>((s) =>
+          {
+              if (!string.IsNullOrEmpty(s)&& SelectedTaskDtlModel!=null)
+              {
+                  SelectedTaskDtlModel.TaskGroupID = s;
+                  using(TaskNoteDataAccess task=new TaskNoteDataAccess())
+                  {
+                      task.Update(SelectedTaskDtlModel);
+                      task.SaveChangesAsync();
+                  }
+              }
+          });
+
+        public RelayCommand SettingTaskGroupCommand => new RelayCommand(() =>
+          {
+              if (SelectTaskModel!=null)
+              {
+                  SelectTaskModel.TaskGroups=JsonHelper.ConvertObject<ObservableCollection<TaskGroup>>( WindowsManager.CreateDialogWindowByViewModelResult("SettingTaskGroupView", new SettingTaskGroupViewModel(), new { TaskModelId=SelectTaskModel.ID,taskGroups= SelectTaskModel.TaskGroups }));
+              }
           });
         #endregion
 

@@ -93,7 +93,7 @@ namespace TaskNote.ViewModel
                         }
                         CurrentUser.IsLogin = true;
                         taskNote.Users.Update(CurrentUser);
-                        taskNote.SaveChanges();
+                        taskNote.SaveChangesAsync();
                         GlobalDataManager.GetInstance().LoginUserInfo = CurrentUser;
                         isLogin = true;
                         WindowsManager.CloseWindow(WindowsManager.Windows["LoginWindow"]);

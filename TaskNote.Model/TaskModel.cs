@@ -32,6 +32,7 @@ namespace TaskNote.Model
             Detail = new ObservableCollection<TaskDtlModel>();
             fileAttachmentModels = new ObservableCollection<FileAttachmentModel>();
             TaskGroups = new ObservableCollection<TaskGroup>();
+            TaskDtls = new ObservableCollection<TaskDtlModel>();
         }
 
         #region 属性
@@ -90,6 +91,14 @@ namespace TaskNote.Model
             set { _TaskDes = value; DoNotify(); }
         }
 
+        private bool _IsImportant;
+        [Display(Name = "是否重要")]
+        [Column("IsImportant")]
+        public bool IsImportant
+        {
+            get { return _IsImportant; }
+            set { _IsImportant = value; DoNotify(); }
+        }
 
 
         [NotMapped]
@@ -98,36 +107,36 @@ namespace TaskNote.Model
         public ObservableCollection<FileAttachmentModel> fileAttachmentModels { get; set; }
         [NotMapped]
         public ObservableCollection<TaskGroup> TaskGroups { get; set; }
+        [NotMapped]
+        public ObservableCollection<TaskDtlModel> TaskDtls { get; set; }
 
+        private int _NoFinishedTaskDtl;
         [NotMapped]
         public int NoFinishedTaskDtl
         {
             get
             {
-                if (Detail!=null)
-                {
-                    return Detail.Where(w => w.IsChecked == false).Count();
-                }
-                else
-                {
-                    return 0;
-                }
+                return _NoFinishedTaskDtl;
+            }
+            set
+            {
+                _NoFinishedTaskDtl = value;
+                DoNotify();
             }
         }
 
+        private int _FinishedTaskDtl;
         [NotMapped]
         public int FinishedTaskDtl
         {
             get
             {
-                if (Detail != null)
-                {
-                    return Detail.Where(w => w.IsChecked == true).Count();
-                }
-                else
-                {
-                    return 0;
-                }
+                return _FinishedTaskDtl;
+            }
+            set
+            {
+                _FinishedTaskDtl = value;
+                DoNotify();
             }
         }
 
@@ -149,6 +158,11 @@ namespace TaskNote.Model
     [Table("TaskDtl")]
     public class TaskDtlModel : TopBase
     {
+        public TaskDtlModel()
+        {
+            IsFinished = false;
+        }
+
         private string _taskModelID;
         [Display(Name = "关联Task")]
         [Column("taskModelID")]
@@ -159,14 +173,14 @@ namespace TaskNote.Model
         }
 
 
-        private TaskModel _taskModel;
-        [Display(Name = "关联Task")]
-        [Column("taskModel")]
-        public TaskModel taskModel
-        {
-            get { return _taskModel; }
-            set { _taskModel = value; DoNotify(); }
-        }
+        //private TaskModel _taskModel;
+        //[Display(Name = "关联Task")]
+        //[Column("taskModel")]
+        //public TaskModel taskModel
+        //{
+        //    get { return _taskModel; }
+        //    set { _taskModel = value; DoNotify(); }
+        //}
 
         private string _TaskGroupID;
         [Display(Name = "关联任务组")]
@@ -177,14 +191,14 @@ namespace TaskNote.Model
             set { _TaskGroupID = value; DoNotify(); }
         }
 
-        private TaskGroup _taskGroup;
-        [Display(Name = "关联任务组")]
-        [Column("TaskGroup")]
-        public TaskGroup TaskGroup
-        {
-            get { return _taskGroup; }
-            set { _taskGroup = value; DoNotify(); }
-        }
+        //private TaskGroup _taskGroup;
+        //[Display(Name = "关联任务组")]
+        //[Column("TaskGroup")]
+        //public TaskGroup TaskGroup
+        //{
+        //    get { return _taskGroup; }
+        //    set { _taskGroup = value; DoNotify(); }
+        //}
 
         private string _TaskContext;
         [Display(Name = "Task内容")]
@@ -202,6 +216,15 @@ namespace TaskNote.Model
         {
             get { return _IsChecked; }
             set { _IsChecked = value; DoNotify(); }
+        }
+
+        private bool _IsFinished;
+        [Display(Name = "是否完成")]
+        [Column("IsFinished")]
+        public bool IsFinished
+        {
+            get { return _IsFinished; }
+            set { _IsFinished = value; }
         }
 
 

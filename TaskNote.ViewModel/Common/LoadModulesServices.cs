@@ -43,6 +43,8 @@ namespace TaskNote.ViewModel.Common
 
         public Dictionary<string, FrameworkElement> ModulesDic = new Dictionary<string, FrameworkElement>();
 
+        public List<FrameworkElementInfo> frameworks { get; set; } = new List<FrameworkElementInfo>();
+
         private CompositionContainer container = null;
 
         /// <summary>
@@ -50,6 +52,8 @@ namespace TaskNote.ViewModel.Common
         /// </summary>
         public void LoadModules()
         {
+            ModulesDic.Clear();
+            frameworks.Clear();
             var dir = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory + @"\Pluing");
             if (dir.Exists)
             {
@@ -66,12 +70,26 @@ namespace TaskNote.ViewModel.Common
 
                 foreach (var plugin in Plugins)
                 {
+                    
                     string pluginName = plugin.Metadata.ModuleName;
                     string pluginFullName = plugin.Metadata.ModuleFullName;
                     int pluginNum = plugin.Metadata.Priority;
                     var framework = (FrameworkElement)plugin.Value.Window;
                     framework.Name = pluginName;
                     ModulesDic.Add(pluginName, framework);
+
+                    //便于后续添加小工具
+                    FrameworkElementInfo info = new FrameworkElementInfo()
+                    {
+                        Priority = plugin.Metadata.Priority,
+                        ModuleFullName = plugin.Metadata.ModuleFullName,
+                        ModuleName = plugin.Metadata.ModuleName,
+                        Description = plugin.Metadata.Description,
+                        Author = plugin.Metadata.Author,
+                        Version = plugin.Metadata.Version,
+                        frameworkElement = framework
+                    };
+                    frameworks.Add(info);
                 }
 
             }
@@ -89,6 +107,25 @@ namespace TaskNote.ViewModel.Common
 
         #endregion
 
+        
+    }
+    /// <summary>
+    /// Module信息类
+    /// </summary>
+    public class FrameworkElementInfo : IMetaData
+    {
+        public int Priority { get; set; }
 
+        public string ModuleFullName { get; set; }
+
+        public string ModuleName { get; set; }
+
+        public string Description { get; set; }
+
+        public string Author { get; set; }
+
+        public string Version { get; set; }
+
+        public FrameworkElement frameworkElement { get; set; }
     }
 }

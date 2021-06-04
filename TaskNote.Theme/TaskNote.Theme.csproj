@@ -21,6 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TaskNote.DataAccess\TaskNote.DataAccess.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Assets\Fonts\iconfont.ttf" />
     <Resource Include="Assets\Fonts\youyuan.TTF" />
     <Resource Include="Assets\Images\时间管理.png" />

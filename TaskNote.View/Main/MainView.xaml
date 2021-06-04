@@ -117,7 +117,8 @@
                             Content="&#xe667;"
                             FontSize="20"
                             Style="{StaticResource WindowControlButtonStyle}"
-                            ToolTip="设置" />
+                            ToolTip="设置"
+                            Visibility="Collapsed" />
                         <Button
                             Command="{Binding MinWindowCommand}"
                             CommandParameter="{Binding ElementName=MainWindow}"
@@ -247,8 +248,8 @@
                             <ScrollViewer.Resources>
                                 <ResourceDictionary>
                                     <ResourceDictionary.MergedDictionaries>
-                                        <!--<ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml" />-->
-                                        <!--<ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml" />-->
+                                        <!--<ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml" />
+                                        <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml" />-->
                                     </ResourceDictionary.MergedDictionaries>
                                 </ResourceDictionary>
                             </ScrollViewer.Resources>
@@ -266,7 +267,7 @@
                                     </Grid.RowDefinitions>
                                     <Grid Width="200">
                                         <Grid.ToolTip>
-                                            <TextBlock Foreground="{StaticResource BaseForeground}" Text="此处显示 准备开始和正在做 的任务" />
+                                            <TextBlock Foreground="{StaticResource BaseForeground}" Text="此处显示 标记为关注 的任务" />
                                         </Grid.ToolTip>
                                         <Grid.Style>
                                             <Style TargetType="Grid">
@@ -297,7 +298,32 @@
                                             </Button.ToolTip>
                                         </Button>
                                     </Grid>
+                                    <ItemsControl Grid.Row="1" ItemsSource="{Binding FocusTask}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <VirtualizingStackPanel />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border
+                                                    Height="25"
+                                                    Margin="2"
+                                                    Background="{StaticResource BaseBackground}"
+                                                    BorderThickness="1"
+                                                    CornerRadius="2"
+                                                    Style="{StaticResource BorderOnlyEffect}">
+                                                    <TextBlock
+                                                        Margin="2,0"
+                                                        HorizontalAlignment="Left"
+                                                        VerticalAlignment="Center"
+                                                        Foreground="{StaticResource BaseForeground}"
+                                                        Text="{Binding TaskName}" />
+                                                </Border>
 
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
                                 </Grid>
                                 <!--#endregion-->
                                 <!--#region 笔记-->
@@ -306,7 +332,8 @@
                                         <RowDefinition Height="30" />
                                         <RowDefinition Height="auto" />
                                     </Grid.RowDefinitions>
-                                    <Grid Width="200">
+                                    <Grid Width="200" ToolTip="此处显示 标记为重要 的笔记">
+
                                         <Grid.Style>
                                             <Style TargetType="Grid">
                                                 <Setter Property="Background" Value="Transparent" />
@@ -324,7 +351,7 @@
                                             FontSize="14"
                                             Foreground="{DynamicResource BaseForeground}"
                                             Text="Note" />
-                                        <Button
+                                        <!--<Button
                                             Margin="10,0"
                                             HorizontalAlignment="Right"
                                             Content="&#xe613;"
@@ -332,9 +359,35 @@
                                             <Button.ToolTip>
                                                 <TextBlock Foreground="{StaticResource BaseForeground}" Text="新增笔记" />
                                             </Button.ToolTip>
-                                        </Button>
-                                    </Grid>
+                                        </Button>-->
 
+                                    </Grid>
+                                    <ItemsControl Grid.Row="1" ItemsSource="{Binding FocusNote}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <VirtualizingStackPanel />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border
+                                                    Height="25"
+                                                    Margin="2"
+                                                    Background="{StaticResource BaseBackground}"
+                                                    BorderThickness="1"
+                                                    CornerRadius="2"
+                                                    Style="{StaticResource BorderOnlyEffect}">
+                                                    <TextBlock
+                                                        Margin="2,0"
+                                                        HorizontalAlignment="Left"
+                                                        VerticalAlignment="Center"
+                                                        Foreground="{StaticResource BaseForeground}"
+                                                        Text="{Binding NoteName}" />
+                                                </Border>
+
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
                                 </Grid>
                                 <!--#endregion-->
 
@@ -386,7 +439,15 @@
                         <TabItem
                             Width="100"
                             Header="Note"
-                            Style="{StaticResource MainTabItemStyle}" />
+                            Style="{StaticResource MainTabItemStyle}">
+                            <ContentControl Content="{Binding NoteView}" />
+                        </TabItem>
+                        <TabItem
+                            Width="100"
+                            Header="小工具"
+                            Style="{StaticResource MainTabItemStyle}">
+                            <ContentControl Content="{Binding ToolsView}" />
+                        </TabItem>
                     </TabControl>
                 </Grid>
             </Grid>

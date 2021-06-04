@@ -115,7 +115,7 @@ namespace TaskNote.Core.SimpleMVVM
         /// <param name="window">窗体</param>
         /// <param name="vm">ViewModel</param>
         /// <returns>在ViewModelBase中重写GetResult方法，获取返回值</returns>
-        public static object CreateDialogWindowByViewModelResult(string windowType, ViewModelBase vm)
+        public static object CreateDialogWindowByViewModelResult(string windowType, ViewModelBase vm,object parmam=null)
         {
             var types = AppDomain.CurrentDomain.GetAssemblies()
                         .SelectMany(a => a.GetTypes().Where(t => t.Name == windowType))
@@ -124,6 +124,10 @@ namespace TaskNote.Core.SimpleMVVM
             {
                 Window window = Activator.CreateInstance(types[0]) as Window;
                 window.DataContext = vm;
+                if (parmam!=null)
+                {
+                    vm.PassData(parmam);
+                }
                 vm.View = window;
                 windows.Add(window);
                 window.ShowDialog();

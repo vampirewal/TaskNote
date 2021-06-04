@@ -47,7 +47,7 @@ namespace TaskNote.ViewModel
             {
                 LoginUserInfo.IsLogin = false;
                 taskNote.Users.Update(LoginUserInfo);
-                taskNote.SaveChanges();
+                taskNote.SaveChangesAsync();
             }
 
             System.Environment.Exit(0);
@@ -57,12 +57,17 @@ namespace TaskNote.ViewModel
         public override void InitData()
         {
             LoginUserInfo = GlobalDataManager.GetInstance().LoginUserInfo;
-            
+            FocusTask = new ObservableCollection<TaskModel>();
+            FocusNote = new ObservableCollection<NoteModel>();
+
             IsHideBtnRightMenu = false;
 
-            LoadModulesServices.GetInstance().LoadModules();
+            
 
-            TaskView = LoadModulesServices.GetInstance().OpenModuleBindingVM("TaskView", new TaskViewModel());
+            //TaskView = LoadModulesServices.GetInstance().OpenModuleBindingVM("TaskView", new TaskViewModel());
+            MessengerRegister();
+            GetView();
+            GetData();
         }
         #endregion
 
@@ -95,15 +100,41 @@ namespace TaskNote.ViewModel
 
         public User LoginUserInfo { get; set; }
 
-        
 
+
+        #region 窗体中TabControl显示
         private FrameworkElement _TaskView;
 
         public FrameworkElement TaskView
         {
             get { return _TaskView; }
-            set { _TaskView=value;DoNotify(); }
+            set { _TaskView = value; DoNotify(); }
         }
+
+        private FrameworkElement _NoteView;
+
+        public FrameworkElement NoteView
+        {
+            get { return _NoteView; }
+            set { _NoteView = value; DoNotify(); }
+        }
+
+        private FrameworkElement _ToolsView;
+        public FrameworkElement ToolsView
+        {
+            get { return _ToolsView; }
+            set { _ToolsView = value; DoNotify(); }
+        }
+        #endregion
+
+        /// <summary>
+        /// 点击关注了的任务列表
+        /// </summary>
+        public ObservableCollection<TaskModel> FocusTask { get; set; }
+        /// <summary>
+        /// 点击关注了的笔记
+        /// </summary>
+        public ObservableCollection<NoteModel> FocusNote { get; set; }
         #endregion
 
         #region 公共方法
@@ -111,7 +142,58 @@ namespace TaskNote.ViewModel
         #endregion
 
         #region 私有方法
+        /// <summary>
+        /// 初始化数据
+        /// </summary>
+        private void GetData()
+        {
+            using(TaskNoteDataAccess task=new TaskNoteDataAccess())
+            {
+                var focusTask = task.TaskS.Where(w => w.IsImportant == true).ToList();
+                if (focusTask.Count>0)
+                {
+                    foreach (var item in focusTask)
+                    {
+                        FocusTask.Add(item);
+                    }
+                }
+            }
+        }
 
+        /// <summary>
+        /// 反射获取窗体
+        /// </summary>
+        private void GetView()
+        {
+            TaskView = Messenger.Default.Send<FrameworkElement>("GetView", "TabView.TaskView");
+            TaskView.DataContext = new TaskViewModel();
+
+            NoteView= Messenger.Default.Send<FrameworkElement>("GetView", "TabView.NoteView");
+            NoteView.DataContext = new NoteViewModel();
+
+            ToolsView= Messenger.Default.Send<FrameworkElement>("GetView", "TabView.ToolsView");
+            ToolsView.DataContext = new ToolsViewModel();
+        }
+
+        private void AddFocusTask(TaskModel taskModel)
+        {
+            FocusTask.Add(taskModel);
+        }
+
+        private void RemoveFocusTask(TaskModel taskModel)
+        {
+            FocusTask.Remove(taskModel);
+        }
+
+        private void AddNoteList(NoteModel entity)
+        {
+            FocusNote.Add(entity);
+        }
+
+        private void RemoveNoteList(NoteModel entity)
+        {
+            FocusNote.Remove(entity);
+        }
         #endregion
 
         #region 命令
@@ -148,10 +230,27 @@ namespace TaskNote.ViewModel
               Messenger.Default.Send("CreateNewTask");
           });
 
-        
 
-        
-        
+
+
+
+        #endregion
+
+        #region 消息
+        /// <summary>
+        /// 消息注册
+        /// </summary>
+        private void MessengerRegister()
+        {
+            Messenger.Default.Register<TaskModel>(this, "AddFocusTask", AddFocusTask);
+            Messenger.Default.Register<TaskModel>(this, "RemoveFocusTask", RemoveFocusTask);
+
+            Messenger.Default.Register<NoteModel>(this, "AddNoteList", AddNoteList);
+            Messenger.Default.Register<NoteModel>(this, "RemoveNoteList", RemoveNoteList);
+
+        }
+
+
         #endregion
     }
 }
