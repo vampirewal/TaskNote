@@ -102,11 +102,9 @@ namespace TaskNote.ViewModel
           {
               taskGroup.GroupSort= taskGroups.Count;
               taskGroup.taskModelID = SelectTaskModelId;
-              using (TaskNoteDataAccess task=new TaskNoteDataAccess())
-              {
-                  task.Add(taskGroup);
-                  task.SaveChangesAsync();
-              }
+
+              SqlHelper.AddEntity(taskGroup);
+              
               taskGroups.Add(taskGroup);
               GC.Collect();
               WindowsManager.CloseWindow(View as Window);
@@ -116,12 +114,8 @@ namespace TaskNote.ViewModel
           {
               if (t!=null)
               {
-                  using (TaskNoteDataAccess task = new TaskNoteDataAccess())
-                  {
-                      task.Remove(t);
-                      task.SaveChangesAsync();
-                  }
-
+                  SqlHelper.Delete(t);
+                 
                   DialogWindow.Show("删除成功！", MessageType.Successful, WindowsManager.Windows["SettingTaskGroupWindow"]);
               }
           });

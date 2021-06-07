@@ -39,22 +39,6 @@ namespace TaskNote.ViewModel
             FolderList = new ObservableCollection<FolderModel>();
             NoteList = new ObservableCollection<NoteModel>();
             GetFolderData();
-            //FolderModel folder = new FolderModel()
-            //{
-            //    FolderName = "ceshi",
-            //    IsDelete = false,
-            //    CreateTime = DateTime.Now,
-            //    ParentId = "0",
-            //    Childs = new ObservableCollection<FolderModel>()
-            //};
-            //folder.Childs.Add(new FolderModel()
-            //{
-            //    FolderName = "ceshi222",
-            //    IsDelete = false,
-            //    CreateTime = DateTime.Now,
-            //    ParentId = folder.ID,
-            //});
-            //FolderList.Add(folder);
         }
         #endregion
 
@@ -93,13 +77,12 @@ namespace TaskNote.ViewModel
         private void GetFolderData()
         {
             FolderList.Clear();
-            using (TaskNoteDataAccess task=new TaskNoteDataAccess())
-            {
-                var current = task.folders.Where(w => w.UserId == LoginUserInfo.ID).ToList();
-                FolderModel firstFolder = current.Find(f => f.ParentId == "0");
-                FolderList.Add(firstFolder);
-                BuildTreeList(current, firstFolder);
-            }
+
+            var current = SqlHelper.GetInfoLst<FolderModel>(w => w.UserId == LoginUserInfo.ID).ToList();
+            FolderModel firstFolder = current.Find(f => f.ParentId == "0");
+            FolderList.Add(firstFolder);
+            BuildTreeList(current, firstFolder);
+            
         }
 
         /// <summary>
@@ -133,15 +116,12 @@ namespace TaskNote.ViewModel
                   SelectNote = null;
                   SelectFolder = f;
                   SaveNoteCommand.RaiseCanExecuteChanged();
-                  using (TaskNoteDataAccess task=new TaskNoteDataAccess())
+                  var current = SqlHelper.GetInfoLst<NoteModel>(w => w.FolderId == f.ID).ToList();
+                  if (current.Count > 0)
                   {
-                      var current = task.notes.Where(w => w.FolderId == f.ID).ToList();
-                      if (current.Count>0)
+                      foreach (var item in current)
                       {
-                          foreach (var item in current)
-                          {
-                              NoteList.Add(item);
-                          }
+                          NoteList.Add(item);
                       }
                   }
               }

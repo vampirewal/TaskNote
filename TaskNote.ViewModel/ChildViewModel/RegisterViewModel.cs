@@ -72,36 +72,33 @@ namespace TaskNote.ViewModel
 
               bool isok = false;
               Window w = View as Window;
-              using (TaskNoteDataAccess work = new TaskNoteDataAccess())
+
+              var OldUser = SqlHelper.GetOne<User>(f => f.UserName == NewUser.UserName);
+              if (OldUser == null)
               {
-                  var OldUser = work.Users.FirstOrDefault(f => f.UserName == NewUser.UserName);
-                  if (OldUser == null)
+                  //创建初始化的笔记文件夹
+                  FolderModel noteModel = new FolderModel()
                   {
-                      //创建初始化的笔记文件夹
-                      FolderModel noteModel = new FolderModel()
-                      {
-                          CanDelete=false,
-                          IsDelete=false,
-                          UserId= NewUser.ID,
-                          FolderName="文件夹",
-                          ParentId="0",
-                          CreateTime=DateTime.Now
-                      };
+                      CanDelete = false,
+                      IsDelete = false,
+                      UserId = NewUser.ID,
+                      FolderName = "文件夹",
+                      ParentId = "0",
+                      CreateTime = DateTime.Now
+                  };
 
-                      NewUser.CreateTime = DateTime.Now;
-                      work.Users.Add(NewUser);
+                  NewUser.CreateTime = DateTime.Now;
+                  SqlHelper.AddEntity(NewUser);
+                  SqlHelper.AddEntity(noteModel);
 
-                      work.Add(noteModel);
-                     
-                      work.SaveChangesAsync();
-                      isok = true;
-                      isRegister = true;
-                  }
-                  else
-                  {
-                      DialogWindow.Show("已存在相同的用户名！", MessageType.Error, WindowsManager.Windows["RegisterWindow"]);
-                  }
+                  isok = true;
+                  isRegister = true;
               }
+              else
+              {
+                  DialogWindow.Show("已存在相同的用户名！", MessageType.Error, WindowsManager.Windows["RegisterWindow"]);
+              }
+              
               if (isok)
               {
                   w.DialogResult = true;

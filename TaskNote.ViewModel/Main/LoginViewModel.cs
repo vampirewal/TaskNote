@@ -77,31 +77,26 @@ namespace TaskNote.ViewModel
         {
 
             //var user= DC.Set<User>().Where(w => w.UserName == CurrentUser.UserName && w.Password == CurrentUser.Password).FirstOrDefault();
-
-            using (TaskNoteDataAccess taskNote = new TaskNoteDataAccess())
+            var current = SqlHelper.GetOne<User>(w => w.UserName == CurrentUser.UserName && w.Password == CurrentUser.Password);
+            var ViewDataUserModel = CurrentUser;
+            if (current != null)
             {
-                var current = taskNote.Users.Where(w => w.UserName == CurrentUser.UserName && w.Password == CurrentUser.Password).FirstOrDefault();
-                var ViewDataUserModel = CurrentUser;
-                if (current != null)
+                if (!current.IsLogin)
                 {
-                    if (!current.IsLogin)
+                    CurrentUser = current;
+                    if (ViewDataUserModel.IsRemember)
                     {
-                        CurrentUser = current;
-                        if (ViewDataUserModel.IsRemember)
-                        {
-                            CurrentUser.IsRemember = true;
-                        }
-                        CurrentUser.IsLogin = true;
-                        taskNote.Users.Update(CurrentUser);
-                        taskNote.SaveChangesAsync();
-                        GlobalDataManager.GetInstance().LoginUserInfo = CurrentUser;
-                        isLogin = true;
-                        WindowsManager.CloseWindow(WindowsManager.Windows["LoginWindow"]);
+                        CurrentUser.IsRemember = true;
                     }
-                    else
-                    {
-                        MessageBox.Show("当前用户已登陆，请勿重复登陆！");
-                    }
+                    CurrentUser.IsLogin = true;
+                    SqlHelper.Update(CurrentUser);
+                    GlobalDataManager.GetInstance().LoginUserInfo = CurrentUser;
+                    isLogin = true;
+                    WindowsManager.CloseWindow(WindowsManager.Windows["LoginWindow"]);
+                }
+                else
+                {
+                    MessageBox.Show("当前用户已登陆，请勿重复登陆！");
                 }
             }
         });
@@ -147,14 +142,11 @@ namespace TaskNote.ViewModel
         /// </summary>
         private void GetLoginName()
         {
-            using (TaskNoteDataAccess work = new TaskNoteDataAccess())
+            HaveLoginUserName.Clear();
+            var current = SqlHelper.GetInfoLst<User>(null).ToList();
+            for (int i = 0; i < current.Count; i++)
             {
-                HaveLoginUserName.Clear();
-                var current = work.Users.Where(w => w.ID != null).ToList();
-                for (int i = 0; i < current.Count; i++)
-                {
-                    HaveLoginUserName.Add(current[i]);
-                }
+                HaveLoginUserName.Add(current[i]);
             }
         }
 

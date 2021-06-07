@@ -82,10 +82,7 @@ namespace TaskNote.ViewModel
         #endregion
 
         #region 命令
-        public RelayCommand QueDingCommand => new RelayCommand(() =>
-          {
-              
-          });
+        
         #endregion
 
         

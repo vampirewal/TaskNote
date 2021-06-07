@@ -43,12 +43,8 @@ namespace TaskNote.ViewModel
         public override RelayCommand CloseWindowCommand => new RelayCommand(() =>
         {
             //正常关闭程序时，需反写数据库内的数据，将用户的登陆状态改为未登录
-            using (TaskNoteDataAccess taskNote = new TaskNoteDataAccess())
-            {
-                LoginUserInfo.IsLogin = false;
-                taskNote.Users.Update(LoginUserInfo);
-                taskNote.SaveChangesAsync();
-            }
+            LoginUserInfo.IsLogin = false;
+            SqlHelper.Update(LoginUserInfo);
 
             System.Environment.Exit(0);
             Application.Current.Shutdown();
@@ -147,17 +143,15 @@ namespace TaskNote.ViewModel
         /// </summary>
         private void GetData()
         {
-            using(TaskNoteDataAccess task=new TaskNoteDataAccess())
+            var focusTask = SqlHelper.GetInfoLst<TaskModel>(w => w.IsImportant == true).ToList();
+            if (focusTask.Count > 0)
             {
-                var focusTask = task.TaskS.Where(w => w.IsImportant == true).ToList();
-                if (focusTask.Count>0)
+                foreach (var item in focusTask)
                 {
-                    foreach (var item in focusTask)
-                    {
-                        FocusTask.Add(item);
-                    }
+                    FocusTask.Add(item);
                 }
             }
+           
         }
 
         /// <summary>
