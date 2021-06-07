@@ -225,6 +225,17 @@ namespace TaskNote.ViewModel
           });
 
 
+        public RelayCommand OpenEditPasswordCommand => new RelayCommand(() =>
+          {
+              if((bool)WindowsManager.CreateDialogWindowByViewModelResult("EditPasswordView", new EditPasswordViewModel(),LoginUserInfo))
+              {
+                  LoginUserInfo.IsLogin = false;
+                  SqlHelper.Update(LoginUserInfo);
+
+                  System.Environment.Exit(0);
+                  Application.Current.Shutdown();
+              }
+          });
 
 
 

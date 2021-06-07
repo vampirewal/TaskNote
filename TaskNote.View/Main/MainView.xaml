@@ -215,10 +215,35 @@
                                         Margin="5"
                                         Background="White"
                                         CornerRadius="5">
-                                        <Button
+                                        <Border.Resources>
+                                            <ResourceDictionary>
+                                                <ResourceDictionary.MergedDictionaries>
+                                                    <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml" />
+                                                    <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml" />
+                                                </ResourceDictionary.MergedDictionaries>
+                                            </ResourceDictionary>
+                                        </Border.Resources>
+                                        <!--<Button
                                             Content="haha"
                                             Cursor="Hand"
-                                            Style="{StaticResource TransparentButton}" />
+                                            Style="{StaticResource TransparentButton}" />-->
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition />
+                                                <RowDefinition />
+                                            </Grid.RowDefinitions>
+
+                                            <TextBlock Foreground="{StaticResource BaseBackground}" Margin="5,0">
+                                                <Run Text="当前登陆人员：" />
+                                                <Run Text="{Binding LoginUserInfo.UserName}" />
+                                            </TextBlock>
+
+                                            <Button
+                                                Grid.Row="1"
+                                                Command="{Binding OpenEditPasswordCommand}"
+                                                Content="修改密码"
+                                                Style="{StaticResource ButtonSuccess}" />
+                                        </Grid>
                                     </Border>
 
                                 </Border>

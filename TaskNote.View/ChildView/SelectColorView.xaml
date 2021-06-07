@@ -11,6 +11,7 @@
     Width="300"
     Height="450"
     ResizeMode="NoResize"
+    ShowInTaskbar="False"
     Style="{StaticResource WindowDefauleStyle}"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">

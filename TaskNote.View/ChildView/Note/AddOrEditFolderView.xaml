@@ -11,6 +11,7 @@
     Width="200"
     Height="150"
     ResizeMode="NoResize"
+    ShowInTaskbar="False"
     Style="{StaticResource WindowDefauleStyle}"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
@@ -56,7 +57,10 @@
                             </ResourceDictionary.MergedDictionaries>
                         </ResourceDictionary>
                     </StackPanel.Resources>
-                    <TextBlock VerticalAlignment="Center" Text="文件夹名称：" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource BaseForeground}"
+                        Text="文件夹名称：" />
                     <TextBox Width="100" Text="{Binding folderModel.FolderName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
 
