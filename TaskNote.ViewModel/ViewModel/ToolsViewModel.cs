@@ -17,6 +17,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaskNote.Core.SimpleMVVM;
+using TaskNote.ViewModel.ChildViewModel.Modules;
 using TaskNote.ViewModel.Common;
 
 namespace TaskNote.ViewModel
@@ -66,7 +67,7 @@ namespace TaskNote.ViewModel
               if (f != null)
               {
                   //创建窗体打开
-
+                  WindowsManager.CreateModulesWindow("ModulesView",new ModulesViewModel(),f);
               }
           });
         #endregion

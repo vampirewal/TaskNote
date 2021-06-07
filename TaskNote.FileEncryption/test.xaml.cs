@@ -15,18 +15,20 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TaskNote.Core;
 
-namespace TaskNote.TaskView
+namespace TaskNote.FileEncryption
 {
     /// <summary>
-    /// TaskView.xaml 的交互逻辑
+    /// test.xaml 的交互逻辑
     /// </summary>
-    [Export(typeof(IView))]
-    [CustomExportMetadata(1, "TaskView", "TaskView", "任务界面", "杨程", "1.0")]
-    public partial class TaskView : UserControl,IView
+    [Serializable]
+    [Export(typeof(Core.IView))]
+    [CustomExportMetadata(1, "test", "测试窗体", "测试到底能不能打开", "杨程", "1.0")]
+    public partial class test : UserControl, IView
     {
-        public TaskView()
+        public test()
         {
             InitializeComponent();
+            this.DataContext = new testViewModel();
         }
 
         public object Window => this;

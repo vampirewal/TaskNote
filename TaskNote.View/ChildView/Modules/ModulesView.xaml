@@ -8,14 +8,16 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Name="ModulesWindow"
     Title="{Binding Title}"
-    Width="800"
-    Height="450"
+    Width="{Binding WindowWidth, Mode=TwoWay}"
+    Height="{Binding WindowHeight, Mode=TwoWay}"
+    ResizeMode="NoResize"
     Style="{StaticResource WindowDefauleStyle}"
+    WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
     <Border Style="{StaticResource DefualtWindowBorderStyle}">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="40" />
+                <RowDefinition Height="31" />
                 <RowDefinition />
             </Grid.RowDefinitions>
 
@@ -57,8 +59,9 @@
                             Command="{Binding MaxWindowCommand}"
                             CommandParameter="{Binding ElementName=MainWindow}"
                             Content="&#xe653;"
+                            Cursor="Hand"
                             Style="{StaticResource WindowControlButtonStyle}"
-                            ToolTip="最大化" Cursor="Hand" />
+                            ToolTip="最大化" />
                         <Button
                             Command="{Binding CloseWindowCommand}"
                             CommandParameter="{Binding ElementName=MainWindow}"
@@ -66,6 +69,17 @@
                             ToolTip="关闭" />
                     </StackPanel>
                 </Grid>
+            </Border>
+
+            <Border
+                Grid.Row="1"
+                Width="{Binding WindowWidth, Mode=TwoWay}"
+                Height="{Binding WindowHeight, Mode=TwoWay}"
+                Margin="5">
+                <ContentControl
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top"
+                    Content="{Binding ShowFrameworkElement}" />
             </Border>
         </Grid>
     </Border>

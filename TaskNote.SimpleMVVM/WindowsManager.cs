@@ -141,6 +141,36 @@ namespace TaskNote.Core.SimpleMVVM
             
         }
 
+        /// <summary>
+        /// 创建模块窗体
+        /// </summary>
+        /// <param name="WindowName"></param>
+        public static void CreateModulesWindow(string WindowName, ViewModelBase vm, object parmam)
+        {
+            if (parmam==null)
+            {
+                throw new Exception("创建该窗体必须传入参数！");
+            }
+            var types = AppDomain.CurrentDomain.GetAssemblies()
+                        .SelectMany(a => a.GetTypes().Where(t => t.Name == WindowName))
+                        .ToArray();
+            if (types.Length == 1)
+            {
+                Window window = Activator.CreateInstance(types[0]) as Window;
+                window.DataContext = vm;
+                //var vm =(ViewModelBase) window.DataContext;
+                vm.PassData(parmam);
+                vm.View = window;
+                windows.Add(window);
+                window.Show();
+                
+            }
+            else
+            {
+                throw new Exception("没有找到该窗体类型或窗体类型不唯一");
+            }
+
+        }
 
         public static bool CreateDialogWindowToBool(Window window)
         {

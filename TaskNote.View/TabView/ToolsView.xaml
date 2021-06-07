@@ -71,6 +71,7 @@
                 <DataGrid.RowStyle>
                     <Style BasedOn="{StaticResource DataGridRowStyle}" TargetType="DataGridRow">
                         <Setter Property="Background" Value="{StaticResource BaseBackground3}" />
+                        <Setter Property="Foreground" Value="{StaticResource BaseForeground}" />
                         <Setter Property="Opacity" Value="0.7" />
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="true">

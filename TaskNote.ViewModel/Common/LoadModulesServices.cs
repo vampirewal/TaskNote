@@ -77,7 +77,7 @@ namespace TaskNote.ViewModel.Common
                     var framework = (FrameworkElement)plugin.Value.Window;
                     framework.Name = pluginName;
                     ModulesDic.Add(pluginName, framework);
-
+                    
                     //便于后续添加小工具
                     FrameworkElementInfo info = new FrameworkElementInfo()
                     {
@@ -87,6 +87,8 @@ namespace TaskNote.ViewModel.Common
                         Description = plugin.Metadata.Description,
                         Author = plugin.Metadata.Author,
                         Version = plugin.Metadata.Version,
+                        WindowWidth=framework.Width,
+                        WindowHeight=framework.Height,
                         frameworkElement = framework
                     };
                     frameworks.Add(info);
@@ -127,5 +129,9 @@ namespace TaskNote.ViewModel.Common
         public string Version { get; set; }
 
         public FrameworkElement frameworkElement { get; set; }
+
+        public double WindowWidth { get; set; }
+
+        public double WindowHeight { get; set; }
     }
 }

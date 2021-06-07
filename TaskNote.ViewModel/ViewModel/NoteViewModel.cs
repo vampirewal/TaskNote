@@ -163,11 +163,8 @@ namespace TaskNote.ViewModel
                       IsFocus=false
                   };
 
-                  using (TaskNoteDataAccess task = new TaskNoteDataAccess())
-                  {
-                      task.Add(note);
-                      task.SaveChangesAsync();
-                  }
+                  SqlHelper.AddEntity(note);
+
                   NoteList.Add(note);
               }
               else
@@ -186,12 +183,8 @@ namespace TaskNote.ViewModel
                   var current=(FolderModel) WindowsManager.CreateDialogWindowByViewModelResult("AddOrEditFolderView", new AddOrEditFolderViewModel(),
                       new { Type ="新建", folderModel =f});
 
-                  using(TaskNoteDataAccess task =new TaskNoteDataAccess())
-                  {
-                      task.Add(current);
-                      task.SaveChangesAsync();
-                  }
-                  //GetFolderData();
+                  SqlHelper.AddEntity(current);
+                  
                   f.Childs.Add(current);
               }
           });
@@ -204,11 +197,8 @@ namespace TaskNote.ViewModel
                 var current = (FolderModel)WindowsManager.CreateDialogWindowByViewModelResult("AddOrEditFolderView", new AddOrEditFolderViewModel(),
                     new { Type = "修改", folderModel = f });
 
-                using (TaskNoteDataAccess task = new TaskNoteDataAccess())
-                {
-                    task.Update(current);
-                    task.SaveChangesAsync();
-                }
+                SqlHelper.Update(current);
+                
             }
         });
 
@@ -216,22 +206,18 @@ namespace TaskNote.ViewModel
           {
               if (DialogWindow.ShowDialog("是否删除文件夹？\r\n该操作会将目录下的笔记转移至上级目录下", "请确认"))
               {
-                  using(TaskNoteDataAccess task=new TaskNoteDataAccess())
+                  var currentNote = SqlHelper.GetInfoLst<NoteModel>(w => w.FolderId == f.ID).ToList();
+                  if (currentNote.Count > 0)
                   {
-                      var currentNote = task.notes.Where(w => w.FolderId == f.ID).ToList();
-                      if (currentNote.Count>0)
+                      foreach (var item in currentNote)
                       {
-                          foreach (var item in currentNote)
-                          {
-                              item.FolderId = f.ParentId;
-                          }
+                          item.FolderId = f.ParentId;
                       }
-                      task.UpdateRange(currentNote);
-                      task.Remove(f);
-                      task.SaveChangesAsync();
-
-                      GetFolderData();
                   }
+                  SqlHelper.UpdateList(currentNote);
+                  SqlHelper.RealDelete<FolderModel>(w=>w.ID==f.ID);
+                  GetFolderData();
+                  
               }
           });
 
@@ -248,11 +234,8 @@ namespace TaskNote.ViewModel
           {
               if (SelectNote!=null)
               {
-                  using(TaskNoteDataAccess task=new TaskNoteDataAccess())
-                  {
-                      task.Update(SelectNote);
-                      task.SaveChangesAsync();
-                  }
+                  SqlHelper.Update(SelectNote);
+                  
                   DialogWindow.Show("保存成功！", MessageType.Successful, WindowsManager.Windows["MainWindow"]);
               }
           }, (o) =>
@@ -283,12 +266,9 @@ namespace TaskNote.ViewModel
                       //移除关注列表
                       Messenger.Default.Send("RemoveNoteList", n);
                   }
-                  using(TaskNoteDataAccess task=new TaskNoteDataAccess())
-                  {
-                      task.Update(n);
-                      task.SaveChangesAsync();
-                  }
 
+                  SqlHelper.Update(n);
+                  
               }
           });
 
@@ -303,11 +283,8 @@ namespace TaskNote.ViewModel
                       {
                           Messenger.Default.Send("RemoveNoteList", n);
                       }
-                      using(TaskNoteDataAccess task=new TaskNoteDataAccess())
-                      {
-                          task.Remove(n);
-                          task.SaveChangesAsync();
-                      }
+                      SqlHelper.Delete<NoteModel>(w => w.ID == n.ID);
+                      
                       DialogWindow.Show("删除成功！", MessageType.Successful, WindowsManager.Windows["MainWindow"]);
                   }
               }

@@ -16,12 +16,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using TaskNote.Core;
 using TaskNote.Core.SimpleMVVM;
+using TaskNote.ViewModel.Common;
 
 namespace TaskNote.ViewModel.ChildViewModel.Modules
 {
-    public class ModulesViewModel:ViewModelBase
+    public class ModulesViewModel : ViewModelBase
     {
+        
+
         public ModulesViewModel()
         {
             //构造函数
@@ -29,9 +34,22 @@ namespace TaskNote.ViewModel.ChildViewModel.Modules
 
         public override void PassData(object obj)
         {
-            base.PassData(obj);
+            //FrameworkElementInfo frameworkElementInfo = JsonHelper.ConvertObject<FrameworkElementInfo>(obj);
+            FrameworkElementInfo frameworkElementInfo = (FrameworkElementInfo)(obj);
+            Title = frameworkElementInfo.ModuleName;
+            ShowFrameworkElement = frameworkElementInfo.frameworkElement;
+            WindowWidth = frameworkElementInfo.WindowWidth;
+            WindowHeight = frameworkElementInfo.WindowHeight+31;
         }
         #region 属性
+        private FrameworkElement showFrameworkElement;
+        public FrameworkElement ShowFrameworkElement { get => showFrameworkElement; set { showFrameworkElement = value; DoNotify(); } }
+
+        private double _WindowWidth;
+        public double WindowWidth { get=>_WindowWidth; set { _WindowWidth = value;DoNotify(); } }
+
+        private double _WindowHeight;
+        public double WindowHeight { get=>_WindowHeight; set { _WindowHeight = value;DoNotify(); } }
 
         #endregion
 

@@ -89,31 +89,28 @@ namespace TaskNote.ViewModel
         private void GetTaskData()
         {
             TaskList.Clear();
-            using (TaskNoteDataAccess taskNote = new TaskNoteDataAccess())
+            var current = SqlHelper.GetInfoLst<TaskModel>(w => w.UserID == LoginUserInfo.ID).ToList();
+            current.Sort((left, right) =>
             {
-                var current = taskNote.TaskS.Where(w => w.UserID == LoginUserInfo.ID).ToList();
-
-                current.Sort((left, right) =>
+                if (left.CreateTime > right.CreateTime)
                 {
-                    if (left.CreateTime > right.CreateTime)
-                    {
-                        return 1;
-                    }
-                    else
-                    {
-                        return -1;
-                    }
-                });
-
-                foreach (var item in current)
-                {
-                    var currentDtl = taskNote.TaskDtl.Where(w => w.taskModelID == item.ID).ToList();
-                    item.FinishedTaskDtl = currentDtl.Where(w => w.IsFinished == true).Count();
-                    item.NoFinishedTaskDtl= currentDtl.Where(w => w.IsFinished == false).Count();
-
-                    TaskList.Add(item);
+                    return 1;
                 }
+                else
+                {
+                    return -1;
+                }
+            });
+
+            foreach (var item in current)
+            {
+                var currentDtl = SqlHelper.GetInfoLst<TaskDtlModel>(w => w.taskModelID == item.ID).ToList();
+                item.FinishedTaskDtl = currentDtl.Where(w => w.IsFinished == true).Count();
+                item.NoFinishedTaskDtl = currentDtl.Where(w => w.IsFinished == false).Count();
+
+                TaskList.Add(item);
             }
+            
         }
 
         /// <summary>
@@ -127,42 +124,33 @@ namespace TaskNote.ViewModel
             SelectTaskModel.TaskGroups.Clear();
             SelectTaskModel.TaskDtls.Clear();
 
-            using (TaskNoteDataAccess tn = new TaskNoteDataAccess())
+            var current = SqlHelper.GetInfoLst<TaskDtlModel>(w => w.taskModelID == task.ID)?.ToList();
+            if (current != null && current.Count > 0)
             {
-                var current = tn.TaskDtl.Where(w => w.taskModelID == task.ID)?.ToList();
-                if (current!=null&& current.Count>0)
+                foreach (var item in current)
                 {
-                    foreach (var item in current)
-                    {
-                        SelectTaskModel.Detail.Add(item);
-                    }
-                }
-                var currentFileAttachments = tn.fileAttachments.Where(w => w.ParentGuidId == task.ID)?.ToList();
-                if (currentFileAttachments != null&& currentFileAttachments.Count>0)
-                {
-                    foreach (var item in currentFileAttachments)
-                    {
-                        SelectTaskModel.fileAttachmentModels.Add(item);
-                    }
-                }
-                var currentTaskGroup = tn.TaskGroups.Where(w => w.taskModelID == task.ID)?.ToList();
-                if (currentTaskGroup != null&& currentTaskGroup.Count>0)
-                {
-                    foreach (var item in currentTaskGroup)
-                    {
-                        SelectTaskModel.TaskGroups.Add(item);
-                    }
-                }
-
-                var currentTaskDtls = tn.TaskDtl.Where(w => w.taskModelID == task.ID)?.ToList();
-                if (currentTaskDtls!=null&& currentTaskDtls.Count>0)
-                {
-                    foreach (var item in currentTaskDtls)
-                    {
-                        SelectTaskModel.TaskDtls.Add(item);
-                    }
+                    SelectTaskModel.Detail.Add(item);
                 }
             }
+
+            var currentFileAttachments = SqlHelper.GetInfoLst<FileAttachmentModel>(w => w.ParentGuidId == task.ID)?.ToList();
+            if (currentFileAttachments != null && currentFileAttachments.Count > 0)
+            {
+                foreach (var item in currentFileAttachments)
+                {
+                    SelectTaskModel.fileAttachmentModels.Add(item);
+                }
+            }
+
+            var currentTaskGroup = SqlHelper.GetInfoLst<TaskGroup>(w => w.taskModelID == task.ID)?.ToList();
+            if (currentTaskGroup != null && currentTaskGroup.Count > 0)
+            {
+                foreach (var item in currentTaskGroup)
+                {
+                    SelectTaskModel.TaskGroups.Add(item);
+                }
+            }
+            
         }
 
         /// <summary>
@@ -220,21 +208,11 @@ namespace TaskNote.ViewModel
             };
 
             tm.TaskGroups = DefaultTaskGroup;
-            using (TaskNoteDataAccess tn = new TaskNoteDataAccess())
-            {
-                try
-                {
-                    tn.Add(tm);
-                    tn.AddRange(DefaultTaskGroup);
-                    tn.SaveChangesAsync();
-                }
-                catch (Exception e)
-                {
-                    DialogWindow.Show(e.ToString(), MessageType.Error, WindowsManager.Windows["MainWindow"]);
-                    
-                }
-                
-            }
+
+            SqlHelper.AddEntity(tm);
+            SqlHelper.AddEntityList(DefaultTaskGroup.ToList());
+
+            
         }
         #endregion
 
@@ -347,11 +325,9 @@ namespace TaskNote.ViewModel
                                     SelectTaskModel.fileAttachmentModels.Add(fam);
                                 });
 
-                                using (TaskNoteDataAccess work = new TaskNoteDataAccess())
-                                {
-                                    work.fileAttachments.Add(fam);
-                                    work.SaveChangesAsync();
-                                }
+                                SqlHelper.AddEntity(fam);
+
+                                
                             }
                         }
                         catch
@@ -384,11 +360,9 @@ namespace TaskNote.ViewModel
         public RelayCommand<FileAttachmentModel> DeleteAttachmentCommand => new RelayCommand<FileAttachmentModel>((f) =>
         {
             SelectTaskModel.fileAttachmentModels.Remove(f);
-            using (TaskNoteDataAccess work = new TaskNoteDataAccess())
-            {
-                work.fileAttachments.Remove(f);
-                work.SaveChangesAsync();
-            }
+            SqlHelper.RealDelete<FileAttachmentModel>(w => w.ID == f.ID);
+
+            
             DialogWindow.Show("已成功将文件删除！", MessageType.Successful, WindowsManager.Windows["MainWindow"]);
         });
         #endregion
@@ -406,11 +380,9 @@ namespace TaskNote.ViewModel
               };
 
               SelectTaskModel.TaskDtls.Add(taskDtl);
-              using(TaskNoteDataAccess task =new TaskNoteDataAccess())
-              {
-                  task.Add(taskDtl);
-                  task.SaveChangesAsync();
-              }
+
+              SqlHelper.AddEntity(taskDtl);
+              
           });
 
         /// <summary>
@@ -421,11 +393,9 @@ namespace TaskNote.ViewModel
               if(DialogWindow.ShowDialog($"是否确定将<{t.TaskName}>任务放入回收站？", "请确认"))
               {
                   t.IsDelete = true;
-                  using(TaskNoteDataAccess task=new TaskNoteDataAccess())
-                  {
-                      task.Update(t);
-                      task.SaveChangesAsync();
-                  }
+
+                  SqlHelper.Update(t);
+                  
               }
           });
 
@@ -436,14 +406,10 @@ namespace TaskNote.ViewModel
           {
               try
               {
-                  using (TaskNoteDataAccess task = new TaskNoteDataAccess())
-                  {
-                      task.Update(SelectTaskModel);
-                      task.UpdateRange(SelectTaskModel.TaskDtls);
-                      task.UpdateRange(SelectTaskModel.TaskGroups);
-
-                      task.SaveChangesAsync();
-                  }
+                  SqlHelper.Update(SelectTaskModel);
+                  SqlHelper.UpdateList(SelectTaskModel.TaskDtls.ToList());
+                  SqlHelper.UpdateList(SelectTaskModel.TaskGroups.ToList());
+                  
                   DialogWindow.Show("保存成功！", MessageType.Successful, WindowsManager.Windows["MainWindow"]);
               }
               catch 
@@ -455,21 +421,18 @@ namespace TaskNote.ViewModel
 
         public RelayCommand<TaskModel> IsImportantCommand => new RelayCommand<TaskModel>((s) =>
           {
-              using(TaskNoteDataAccess task=new TaskNoteDataAccess())
+              if (s.IsImportant)
               {
-                  if (s.IsImportant)
-                  {
-                      
-                      Messenger.Default.Send("RemoveFocusTask", s);
-                  }
-                  else
-                  {
-                      Messenger.Default.Send("AddFocusTask", s);
-                  }
-                  s.IsImportant = !s.IsImportant;
-                  task.Update(s);
-                  task.SaveChangesAsync();
+
+                  Messenger.Default.Send("RemoveFocusTask", s);
               }
+              else
+              {
+                  Messenger.Default.Send("AddFocusTask", s);
+              }
+              s.IsImportant = !s.IsImportant;
+
+              SqlHelper.Update(s);
               
           });
 
@@ -480,13 +443,9 @@ namespace TaskNote.ViewModel
                   if(DialogWindow.ShowDialog("是否确定要删除该任务明细？一经删除无法恢复！", "请确认"))
                   {
                       SelectTaskModel.Detail.Remove(t);
-                      using (TaskNoteDataAccess task=new TaskNoteDataAccess())
-                      {
-                          task.Remove(t);
-                          task.SaveChangesAsync();
-                          
-                          DialogWindow.Show("删除成功！", MessageType.Successful, WindowsManager.Windows["MainWindow"]);
-                      }
+                      SqlHelper.Delete(t);
+                      
+                      DialogWindow.Show("删除成功！", MessageType.Successful, WindowsManager.Windows["MainWindow"]);
                   }
               }
           });
@@ -497,11 +456,8 @@ namespace TaskNote.ViewModel
               if (!string.IsNullOrEmpty(s)&& SelectedTaskDtlModel!=null)
               {
                   SelectedTaskDtlModel.TaskGroupID = s;
-                  using(TaskNoteDataAccess task=new TaskNoteDataAccess())
-                  {
-                      task.Update(SelectedTaskDtlModel);
-                      task.SaveChangesAsync();
-                  }
+                  SqlHelper.Update(SelectedTaskDtlModel);
+                  
               }
           });
 

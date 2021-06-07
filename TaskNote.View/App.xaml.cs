@@ -31,7 +31,12 @@ namespace TaskNote.View
             {
                 WindowsManager.CreateWindow("MainView", ShowMode.Dialog, new MainViewModel());
             }
+            
+            
         }
+
+        
+
 
         /// <summary>
         /// 注册消息

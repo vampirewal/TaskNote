@@ -37,7 +37,7 @@ namespace TaskNote.Core.SimpleMVVM
             get { return DesignerProperties.GetIsInDesignMode(new DependencyObject()); }
         }
 
-
+        
         /// <summary>
         /// 目标View
         /// </summary>
