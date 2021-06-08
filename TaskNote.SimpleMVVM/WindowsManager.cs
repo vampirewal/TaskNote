@@ -162,7 +162,7 @@ namespace TaskNote.Core.SimpleMVVM
                 vm.PassData(parmam);
                 vm.View = window;
                 windows.Add(window);
-                window.Show();
+                window.ShowDialog();
                 
             }
             else

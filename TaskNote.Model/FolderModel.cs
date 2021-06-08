@@ -48,7 +48,7 @@ namespace TaskNote.Model
         public string ParentId
         {
             get { return _ParentId; }
-            set { _ParentId = value; }
+            set { _ParentId = value; DoNotify(); }
         }
 
         private string _UserId;
@@ -57,7 +57,7 @@ namespace TaskNote.Model
         public string UserId
         {
             get { return _UserId; }
-            set { _UserId = value; }
+            set { _UserId = value; DoNotify(); }
         }
 
 
