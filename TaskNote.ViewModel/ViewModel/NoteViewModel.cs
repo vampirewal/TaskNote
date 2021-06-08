@@ -185,9 +185,10 @@ namespace TaskNote.ViewModel
 
                 var current = (FolderModel)WindowsManager.CreateDialogWindowByViewModelResult("AddOrEditFolderView", new AddOrEditFolderViewModel(),
                     new { Type = "修改", folderModel = f });
-
-                SqlHelper.Update(current);
                 
+                SqlHelper.Update(current);
+                GetFolderData();
+
             }
         });
 
