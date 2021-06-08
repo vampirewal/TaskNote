@@ -151,6 +151,15 @@ namespace TaskNote.ViewModel
                     FocusTask.Add(item);
                 }
             }
+
+            var focusNote = SqlHelper.GetInfoLst<NoteModel>(w => w.IsFocus == true).ToList();
+            if (focusNote.Count>0)
+            {
+                foreach (var item in focusNote)
+                {
+                    FocusNote.Add(item);
+                }
+            }
            
         }
 
@@ -171,22 +180,38 @@ namespace TaskNote.ViewModel
 
         private void AddFocusTask(TaskModel taskModel)
         {
-            FocusTask.Add(taskModel);
+            if (!FocusTask.Where(w => w.ID == taskModel.ID).Any())
+            {
+                FocusTask.Add(taskModel);
+            }
         }
 
         private void RemoveFocusTask(TaskModel taskModel)
         {
-            FocusTask.Remove(taskModel);
+            var current = FocusTask.Where(w => w.ID == taskModel.ID).FirstOrDefault();
+            if (current != null)
+            {
+                FocusTask.Remove(current);
+            }
         }
 
         private void AddNoteList(NoteModel entity)
         {
-            FocusNote.Add(entity);
+            if (!FocusNote.Where(w=>w.ID==entity.ID).Any())
+            {
+                FocusNote.Add(entity);
+            }
+            
         }
 
         private void RemoveNoteList(NoteModel entity)
         {
-            FocusNote.Remove(entity);
+            var current = FocusNote.Where(w => w.ID == entity.ID).FirstOrDefault();
+            if (current!=null)
+            {
+                FocusNote.Remove(current);
+            }
+            
         }
         #endregion
 

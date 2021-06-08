@@ -67,6 +67,15 @@ namespace TaskNote.ViewModel
 
 
         public ObservableCollection<NoteModel> NoteList { get; set; }
+
+        private bool _IsShow;
+
+        public bool IsShow
+        {
+            get { return _IsShow; }
+            set { _IsShow = value; DoNotify(); }
+        }
+
         #endregion
 
         #region 公共方法
@@ -222,10 +231,12 @@ namespace TaskNote.ViewModel
           {
               if (SelectNote == null)
               {
+                  IsShow = false;
                   return false;
               }
               else
               {
+                  IsShow = true;
                   return true;
               }
           });

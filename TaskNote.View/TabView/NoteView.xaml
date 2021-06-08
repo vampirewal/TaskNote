@@ -8,6 +8,7 @@
     Name="NoteControl"
     d:DesignHeight="450"
     d:DesignWidth="800"
+    SnapsToDevicePixels="True"
     mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -327,7 +328,8 @@
                             Cursor="Hand"
                             FontSize="20"
                             Style="{StaticResource TransparentButtonHaveThinkAndIconAndText}"
-                            Tag="&#xe613;" />
+                            Tag="&#xe613;"
+                            UseLayoutRounding="True" />
                     </Border>
 
                     <Border
@@ -376,7 +378,8 @@
                                                 Content="{Binding NoteName}"
                                                 Cursor="Hand"
                                                 Foreground="{StaticResource BaseForeground}"
-                                                Style="{StaticResource TransparentButton}" />
+                                                Style="{StaticResource TransparentButton}"
+                                                ToolTip="{Binding NoteName}" />
 
                                             <StackPanel Grid.Column="1" Orientation="Horizontal">
                                                 <StackPanel.Resources>
@@ -434,6 +437,7 @@
             Background="{StaticResource BaseBackground}"
             BorderThickness="1"
             CornerRadius="5"
+            IsEnabled="{Binding IsShow}"
             Style="{StaticResource BorderOnlyEffect}">
             <Grid>
                 <Grid.Resources>
@@ -455,6 +459,7 @@
                     HorizontalAlignment="Left"
                     Text="{Binding SelectNote.NoteName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <Button
+                    Name="SaveNoteBtn"
                     Margin="5,0"
                     HorizontalAlignment="Right"
                     Command="{Binding SaveNoteCommand}"
@@ -464,6 +469,7 @@
                 <Border Grid.Row="1" Margin="5">
                     <TextBox
                         VerticalContentAlignment="Top"
+                        AcceptsReturn="True"
                         Text="{Binding SelectNote.NoteContext, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         TextWrapping="Wrap" />
                 </Border>
