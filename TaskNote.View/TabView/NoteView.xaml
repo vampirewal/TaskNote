@@ -327,6 +327,7 @@
                             Content="新建笔记"
                             Cursor="Hand"
                             FontSize="20"
+                            Foreground="{StaticResource BaseForeground}"
                             Style="{StaticResource TransparentButtonHaveThinkAndIconAndText}"
                             Tag="&#xe613;"
                             UseLayoutRounding="True" />
