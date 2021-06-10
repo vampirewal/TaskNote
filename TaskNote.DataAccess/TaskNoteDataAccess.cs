@@ -43,10 +43,23 @@ namespace TaskNote.DataAccess
         public DbSet<FolderModel> folders { get; set; }
         public DbSet<NoteModel> notes { get; set; }
 
+        public DbSet<RecycleModel> recycleModels { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
             optionsBuilder.UseSqlite("Data Source=TaskNoteDataBase.db");
+            
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            
+            modelBuilder.Entity<TaskModel>().HasMany(x => x.Detail).WithOne(x => x.taskModel).HasForeignKey(x => x.taskModelID).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<TaskModel>().HasMany(x => x.TaskGroups).WithOne(x => x.taskModel).HasForeignKey(x => x.taskModelID).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<TaskModel>().HasMany(x => x.fileAttachmentModels).WithOne(x => x.taskModel).HasForeignKey(x => x.taskModelID).OnDelete(DeleteBehavior.Cascade);
+
+            //base.OnModelCreating(modelBuilder);
         }
     }
 

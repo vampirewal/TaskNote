@@ -58,12 +58,20 @@ namespace TaskNote.ViewModel
 
             IsHideBtnRightMenu = false;
 
-            
-
             //TaskView = LoadModulesServices.GetInstance().OpenModuleBindingVM("TaskView", new TaskViewModel());
-            MessengerRegister();
+            
             GetView();
             GetData();
+        }
+
+        public override void MessengerRegister()
+        {
+            Messenger.Default.Register<TaskModel>(this, "AddFocusTask", AddFocusTask);
+            Messenger.Default.Register<TaskModel>(this, "RemoveFocusTask", RemoveFocusTask);
+
+            Messenger.Default.Register<NoteModel>(this, "AddNoteList", AddNoteList);
+            Messenger.Default.Register<NoteModel>(this, "RemoveNoteList", RemoveNoteList);
+
         }
         #endregion
 
@@ -261,24 +269,19 @@ namespace TaskNote.ViewModel
                   Application.Current.Shutdown();
               }
           });
-
-
+        /// <summary>
+        /// 打开回收站
+        /// </summary>
+        public RelayCommand OpenRecycleCommand => new RelayCommand(() =>
+          {
+              WindowsManager.CreateDialogWindowByViewModelResult("RecycleBinView", new RecycleBinViewModel());
+          });
 
         #endregion
 
         #region 消息
-        /// <summary>
-        /// 消息注册
-        /// </summary>
-        private void MessengerRegister()
-        {
-            Messenger.Default.Register<TaskModel>(this, "AddFocusTask", AddFocusTask);
-            Messenger.Default.Register<TaskModel>(this, "RemoveFocusTask", RemoveFocusTask);
-
-            Messenger.Default.Register<NoteModel>(this, "AddNoteList", AddNoteList);
-            Messenger.Default.Register<NoteModel>(this, "RemoveNoteList", RemoveNoteList);
-
-        }
+        
+        
 
 
         #endregion

@@ -81,7 +81,7 @@ namespace TaskNote.ViewModel
                   {
                       CanDelete = false,
                       IsDelete = false,
-                      UserId = NewUser.ID,
+                      UserID = NewUser.ID,
                       FolderName = "文件夹",
                       ParentId = "0",
                       CreateTime = DateTime.Now

@@ -87,7 +87,7 @@ namespace TaskNote.ViewModel
         {
             FolderList.Clear();
 
-            var current = SqlHelper.GetInfoLst<FolderModel>(w => w.UserId == LoginUserInfo.ID).ToList();
+            var current = SqlHelper.GetInfoLst<FolderModel>(w => w.UserID == LoginUserInfo.ID).ToList();
             FolderModel firstFolder = current.Find(f => f.ParentId == "0");
             FolderList.Add(firstFolder);
             BuildTreeList(current, firstFolder);
@@ -147,7 +147,7 @@ namespace TaskNote.ViewModel
                       IsDelete = false,
                       NoteName = "新建笔记",
                       NoteContext = "（无）",
-                      UserId = LoginUserInfo.ID,
+                      UserID = LoginUserInfo.ID,
                       CreateTime = DateTime.Now,
                       IsFocus=false
                   };
@@ -268,16 +268,16 @@ namespace TaskNote.ViewModel
           {
               if (n!=null)
               {
-                  if (DialogWindow.ShowDialog("是否确定删除该笔记？", "请确认"))
+                  if (DialogWindow.ShowDialog("是否确定将该笔记放入回收站？", "请确认"))
                   {
                       NoteList.Remove(n);
                       if (n.IsFocus)
                       {
                           Messenger.Default.Send("RemoveNoteList", n);
                       }
-                      SqlHelper.Delete<NoteModel>(w => w.ID == n.ID);
+                      SqlHelper.FalseDelete(n,n.NoteName,SourceType.Note);
                       
-                      DialogWindow.Show("删除成功！", MessageType.Successful, WindowsManager.Windows["MainWindow"]);
+                      DialogWindow.Show("放入回收站成功！", MessageType.Successful, WindowsManager.Windows["MainWindow"]);
                   }
               }
           });

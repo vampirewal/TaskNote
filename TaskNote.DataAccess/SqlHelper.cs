@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using System.Transactions;
 using TaskNote.Core.DataBaseContext;
 using TaskNote.Core.Models;
+using TaskNote.Model;
 
 namespace TaskNote.DataAccess
 {
@@ -86,7 +87,11 @@ namespace TaskNote.DataAccess
         {
             using (TaskNoteDataAccess task = new TaskNoteDataAccess())
             {
-                task.Entry(ListEntity).State = EntityState.Added;
+                foreach (var item in ListEntity)
+                {
+                    task.Entry(item).State = EntityState.Added;
+                }
+                
                 //task.Set<T>().AddRangeAsync(ListEntity);
                 task.SaveChangesAsync();
             }
@@ -119,11 +124,16 @@ namespace TaskNote.DataAccess
         {
             using (TaskNoteDataAccess task = new TaskNoteDataAccess())
             {
-                if (task.Entry(EntityList).State == EntityState.Detached)
+                foreach (var item in EntityList)
                 {
-                    task.Set<List<T>>().Attach(EntityList);
-                    task.Entry(EntityList).State = EntityState.Modified;
+
+                    if (task.Entry(item).State == EntityState.Detached)
+                    {
+                        task.Set<T>().Attach(item);
+                        task.Entry(item).State = EntityState.Modified;
+                    }
                 }
+                
                 task.SaveChangesAsync();
             }
         }
@@ -144,6 +154,7 @@ namespace TaskNote.DataAccess
                 }
                 //task.Set<T>().Remove(v);
                 task.Entry(v).State = EntityState.Deleted;
+                //task.Remove(v);
                 task.SaveChangesAsync();
             } 
         }
@@ -157,7 +168,7 @@ namespace TaskNote.DataAccess
         {
             using (TaskNoteDataAccess task = new TaskNoteDataAccess())
             {
-                task.Entry(t).State = EntityState.Deleted;
+                task.Remove(t);
                 task.SaveChangesAsync();
             }
         }
@@ -182,6 +193,34 @@ namespace TaskNote.DataAccess
         }
 
         /// <summary>
+        /// 假删除并创建回收站数据
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="t"></param>
+        /// <param name="TEntityName"></param>
+        /// <param name="sourceType"></param>
+        public static void FalseDelete<T>(T t,string TEntityName,SourceType sourceType)where T : TopBase
+        {
+            using (TaskNoteDataAccess task = new TaskNoteDataAccess())
+            {
+                t.IsDelete = true;
+                task.Entry(t).State= EntityState.Modified;
+
+                RecycleModel recycle = new RecycleModel()
+                {
+                    CreateTime=DateTime.Now,
+                    SourceID=t.ID,
+                    SourceName= TEntityName,
+                    sourceType= sourceType,
+                    IsDelete=false
+                };
+                task.Entry(recycle).State = EntityState.Added;
+
+                task.SaveChangesAsync();
+            }
+        }
+
+        /// <summary>
         /// 真删除
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -191,9 +230,16 @@ namespace TaskNote.DataAccess
             using (TaskNoteDataAccess task = new TaskNoteDataAccess())
             {
                 var list = task.Set<T>().Where(express).ToList();
+                if (list!=null)
+                {
+                    foreach (var item in list)
+                    {
+                        task.Entry(item).State = EntityState.Deleted;
+                    }
+
+                    task.SaveChangesAsync();
+                }
                 
-                task.Entry(list).State = EntityState.Deleted;
-                task.SaveChangesAsync();
             }
         }
     }

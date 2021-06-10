@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TaskNote.Core;
 using TaskNote.Core.SimpleMVVM;
 using TaskNote.Model;
 using TaskNote.ViewModel.Common;
@@ -44,7 +45,7 @@ namespace TaskNote.ViewModel
         public override void PassData(object obj)
         {
             //folderModel = (FolderModel)obj ;
-            PassValue value = ConverterHelper.ConvertObject<PassValue>(obj);
+            PassValue value = JsonHelper.ConvertObject<PassValue>(obj);
             if (value.Type=="新建")
             {
                 Title = "新建文件夹";
@@ -54,7 +55,7 @@ namespace TaskNote.ViewModel
                     FolderName = "新建文件夹",
                     IsDelete = false,
                     ParentId = value.folderModel.ID,
-                    UserId = value.folderModel.UserId,
+                    UserID = value.folderModel.UserID,
                     CreateTime = DateTime.Now
                 };
             }

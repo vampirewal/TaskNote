@@ -58,7 +58,7 @@
                     </Storyboard>
 
                 </ResourceDictionary>
-
+                <ResourceDictionary />
 
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -428,6 +428,22 @@
                         </ScrollViewer>
 
                         <!--#endregion-->
+
+                        <Border
+                            Grid.Row="3"
+                            Background="{StaticResource BaseBackground3}"
+                            CornerRadius="0,0,0,5"
+                            Style="{StaticResource BorderOnlyEffect}">
+                            <Button
+                                Margin="5"
+                                Command="{Binding OpenRecycleCommand}"
+                                Content="回收站"
+                                FontSize="20"
+                                Foreground="{StaticResource BaseForeground}"
+                                Style="{StaticResource TransparentButtonHaveThinkAndIconAndText}"
+                                Tag="&#xe632;"
+                                UseLayoutRounding="True" />
+                        </Border>
                     </Grid>
                 </Border>
 

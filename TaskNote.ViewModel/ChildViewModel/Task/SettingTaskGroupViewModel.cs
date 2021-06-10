@@ -102,6 +102,7 @@ namespace TaskNote.ViewModel
           {
               taskGroup.GroupSort= taskGroups.Count;
               taskGroup.taskModelID = SelectTaskModelId;
+              taskGroup.taskGroupType = TaskGroupType.CustomCreate;
 
               SqlHelper.AddEntity(taskGroup);
               
@@ -114,8 +115,22 @@ namespace TaskNote.ViewModel
           {
               if (t!=null)
               {
+
+                  //SqlHelper.FalseDelete(t,t.GroupName,SourceType.TaskGroup);
                   SqlHelper.Delete(t);
-                 
+                  taskGroups.Remove(t);
+
+                  var currentList = SqlHelper.GetInfoLst<TaskDtlModel>(w => w.TaskGroupID == t.ID).ToList();
+                  if (currentList!=null&&currentList.Count>0)
+                  {
+                      foreach (var item in currentList)
+                      {
+                          item.TaskGroupID = taskGroups[2].ID;
+                      }
+
+                      SqlHelper.UpdateList(currentList);
+                  }
+
                   DialogWindow.Show("删除成功！", MessageType.Successful, WindowsManager.Windows["SettingTaskGroupWindow"]);
               }
           });
@@ -127,6 +142,12 @@ namespace TaskNote.ViewModel
                   string colorStr = WindowsManager.CreateDialogWindowByViewModelResult("SelectColorView", new SelectColorViewModel()).ToString();
                   t.GroupBackgroundColor = colorStr;
               }
+          });
+
+        public RelayCommand SaveAllTaskGroupCommand => new RelayCommand(() =>
+          {
+              SqlHelper.UpdateList(taskGroups.ToList());
+              DialogWindow.Show("保存成功！", MessageType.Successful, WindowsManager.Windows["SettingTaskGroupWindow"]);
           });
         #endregion
 

@@ -44,8 +44,13 @@ namespace TaskNote.ViewModel
             LoginUserInfo = GlobalDataManager.GetInstance().LoginUserInfo;
             TaskList = new ObservableCollection<TaskModel>();
 
-            MessengerRegister();
+            
             GetTaskData();
+        }
+
+        public override void MessengerRegister()
+        {
+            Messenger.Default.Register(this, "CreateNewTask", CreateNewTask);
         }
         #endregion
 
@@ -89,7 +94,7 @@ namespace TaskNote.ViewModel
         private void GetTaskData()
         {
             TaskList.Clear();
-            var current = SqlHelper.GetInfoLst<TaskModel>(w => w.UserID == LoginUserInfo.ID).ToList();
+            var current = SqlHelper.GetInfoLst<TaskModel>(w => w.UserID == LoginUserInfo.ID&&w.IsDelete==false).ToList();
             current.Sort((left, right) =>
             {
                 if (left.CreateTime > right.CreateTime)
@@ -104,7 +109,7 @@ namespace TaskNote.ViewModel
 
             foreach (var item in current)
             {
-                var currentDtl = SqlHelper.GetInfoLst<TaskDtlModel>(w => w.taskModelID == item.ID).ToList();
+                var currentDtl = SqlHelper.GetInfoLst<TaskDtlModel>(w => w.taskModelID == item.ID&&w.IsDelete==false).ToList();
                 item.FinishedTaskDtl = currentDtl.Where(w => w.IsFinished == true).Count();
                 item.NoFinishedTaskDtl = currentDtl.Where(w => w.IsFinished == false).Count();
 
@@ -122,9 +127,8 @@ namespace TaskNote.ViewModel
             SelectTaskModel.Detail.Clear();
             SelectTaskModel.fileAttachmentModels.Clear();
             SelectTaskModel.TaskGroups.Clear();
-            SelectTaskModel.TaskDtls.Clear();
 
-            var current = SqlHelper.GetInfoLst<TaskDtlModel>(w => w.taskModelID == task.ID)?.ToList();
+            var current = SqlHelper.GetInfoLst<TaskDtlModel>(w => w.taskModelID == task.ID && w.IsDelete == false)?.ToList();
             if (current != null && current.Count > 0)
             {
                 foreach (var item in current)
@@ -133,7 +137,7 @@ namespace TaskNote.ViewModel
                 }
             }
 
-            var currentFileAttachments = SqlHelper.GetInfoLst<FileAttachmentModel>(w => w.ParentGuidId == task.ID)?.ToList();
+            var currentFileAttachments = SqlHelper.GetInfoLst<FileAttachmentModel>(w => w.taskModelID == task.ID&&w.IsDelete==false)?.ToList();
             if (currentFileAttachments != null && currentFileAttachments.Count > 0)
             {
                 foreach (var item in currentFileAttachments)
@@ -142,7 +146,7 @@ namespace TaskNote.ViewModel
                 }
             }
 
-            var currentTaskGroup = SqlHelper.GetInfoLst<TaskGroup>(w => w.taskModelID == task.ID)?.ToList();
+            var currentTaskGroup = SqlHelper.GetInfoLst<TaskGroup>(w => w.taskModelID == task.ID&&w.IsDelete==false)?.ToList();
             if (currentTaskGroup != null && currentTaskGroup.Count > 0)
             {
                 foreach (var item in currentTaskGroup)
@@ -183,7 +187,8 @@ namespace TaskNote.ViewModel
                     IsDelete=false,
                     IsCanDelete=false,
                     GroupSort=0,
-                    CreateTime=DateTime.Now
+                    CreateTime=DateTime.Now,
+                    IsFinishedTag=false
                 },
                 new TaskGroup()
                 {
@@ -193,7 +198,8 @@ namespace TaskNote.ViewModel
                     IsDelete=false,
                     IsCanDelete=false,
                     GroupSort=1,
-                    CreateTime=DateTime.Now
+                    CreateTime=DateTime.Now,
+                    IsFinishedTag=false
                 },
                 new TaskGroup()
                 {
@@ -203,11 +209,12 @@ namespace TaskNote.ViewModel
                     IsDelete=false,
                     IsCanDelete=false,
                     GroupSort=2,
-                    CreateTime=DateTime.Now
+                    CreateTime=DateTime.Now,
+                    IsFinishedTag=true
                 }
             };
 
-            tm.TaskGroups = DefaultTaskGroup;
+            //tm.TaskGroups = DefaultTaskGroup;
 
             SqlHelper.AddEntity(tm);
             SqlHelper.AddEntityList(DefaultTaskGroup.ToList());
@@ -217,6 +224,14 @@ namespace TaskNote.ViewModel
         #endregion
 
         #region 命令
+        /// <summary>
+        /// 刷新界面命令
+        /// </summary>
+        public RelayCommand RefreshCommand => new RelayCommand(() =>
+          {
+              GetTaskData();
+
+          });
 
         #region 详细信息面板开启与关闭
         public bool IsCollapsed { get; set; } = true;
@@ -314,7 +329,7 @@ namespace TaskNote.ViewModel
                                 {
 
                                     AttachmentName = fileName,
-                                    ParentGuidId = SelectTaskModel.ID,
+                                    taskModelID = SelectTaskModel.ID,
                                     Attachment = byData,
                                     AttachmentType = fileType,
                                     AttachmentByte = byData.Length / 1024
@@ -361,28 +376,35 @@ namespace TaskNote.ViewModel
         {
             SelectTaskModel.fileAttachmentModels.Remove(f);
             SqlHelper.RealDelete<FileAttachmentModel>(w => w.ID == f.ID);
+            //SqlHelper.FalseDelete(f, f.AttachmentName, SourceType.Attachment);
 
-            
-            DialogWindow.Show("已成功将文件删除！", MessageType.Successful, WindowsManager.Windows["MainWindow"]);
+
+            DialogWindow.Show("已成功将附件删除！", MessageType.Successful, WindowsManager.Windows["MainWindow"]);
         });
         #endregion
 
         public RelayCommand AddNewTaskDtlCommand => new RelayCommand(() =>
           {
-              TaskDtlModel taskDtl = new TaskDtlModel()
+              if (SelectTaskModel.TaskGroups!=null&& SelectTaskModel.TaskGroups.Count>0)
               {
-                  taskModelID = SelectTaskModel.ID,
-                  TaskGroupID= SelectTaskModel.TaskGroups[0]?.ID,
-                  IsDelete=false,
-                  CreateTime=DateTime.Now,
-                  TaskContext="新任务明细",
-                  IsChecked=false
-              };
+                  TaskDtlModel taskDtl = new TaskDtlModel()
+                  {
+                      taskModelID = SelectTaskModel.ID,
+                      TaskGroupID = SelectTaskModel.TaskGroups[0]?.ID,
+                      IsDelete = false,
+                      CreateTime = DateTime.Now,
+                      TaskContext = "新任务明细",
+                      IsChecked = false
+                  };
 
-              SelectTaskModel.TaskDtls.Add(taskDtl);
+                  SelectTaskModel.Detail.Add(taskDtl);
 
-              SqlHelper.AddEntity(taskDtl);
-              
+                  SqlHelper.AddEntity(taskDtl);
+              }
+              else
+              {
+                  DialogWindow.Show("获取任务组出错！", MessageType.Error, WindowsManager.Windows["MainWindow"]);
+              }
           });
 
         /// <summary>
@@ -390,13 +412,16 @@ namespace TaskNote.ViewModel
         /// </summary>
         public RelayCommand<TaskModel> RecycleBinTaskCommand => new RelayCommand<TaskModel>((t) =>
           {
-              if(DialogWindow.ShowDialog($"是否确定将<{t.TaskName}>任务放入回收站？", "请确认"))
+              if (t!=null)
               {
-                  t.IsDelete = true;
-
-                  SqlHelper.Update(t);
-                  
+                  if (DialogWindow.ShowDialog($"是否确定将<{t.TaskName}>任务放入回收站？", "请确认"))
+                  {
+                      t.IsDelete = true;
+                      TaskList.Remove(t);
+                      SqlHelper.FalseDelete(t,t.TaskName,SourceType.Task);
+                  }
               }
+              
           });
 
         /// <summary>
@@ -407,7 +432,7 @@ namespace TaskNote.ViewModel
               try
               {
                   SqlHelper.Update(SelectTaskModel);
-                  SqlHelper.UpdateList(SelectTaskModel.TaskDtls.ToList());
+                  SqlHelper.UpdateList(SelectTaskModel.Detail.ToList());
                   SqlHelper.UpdateList(SelectTaskModel.TaskGroups.ToList());
                   
                   DialogWindow.Show("保存成功！", MessageType.Successful, WindowsManager.Windows["MainWindow"]);
@@ -436,15 +461,18 @@ namespace TaskNote.ViewModel
               
           });
 
+        /// <summary>
+        /// 删除任务明细
+        /// </summary>
         public RelayCommand<TaskDtlModel> DeleteTaskDtlCommand => new RelayCommand<TaskDtlModel>((t) =>
           {
               if (t!=null)
               {
-                  if(DialogWindow.ShowDialog("是否确定要删除该任务明细？一经删除无法恢复！", "请确认"))
+                  if(DialogWindow.ShowDialog("是否确定要删除该任务明细吗？", "请确认"))
                   {
                       SelectTaskModel.Detail.Remove(t);
+                      //SqlHelper.FalseDelete(t,t.TaskContext,SourceType.TaskDtl);
                       SqlHelper.Delete(t);
-                      
                       DialogWindow.Show("删除成功！", MessageType.Successful, WindowsManager.Windows["MainWindow"]);
                   }
               }
@@ -456,8 +484,15 @@ namespace TaskNote.ViewModel
               if (!string.IsNullOrEmpty(s)&& SelectedTaskDtlModel!=null)
               {
                   SelectedTaskDtlModel.TaskGroupID = s;
-                  SqlHelper.Update(SelectedTaskDtlModel);
                   
+
+                  var current = SqlHelper.GetOne<TaskGroup>(w => w.ID == s);
+                  if (current!=null&&current.IsFinishedTag==true)
+                  {
+                      SelectedTaskDtlModel.IsFinished = true;
+                      
+                  }
+                  SqlHelper.Update(SelectedTaskDtlModel);
               }
           });
 
@@ -465,19 +500,23 @@ namespace TaskNote.ViewModel
           {
               if (SelectTaskModel!=null)
               {
-                  SelectTaskModel.TaskGroups=JsonHelper.ConvertObject<ObservableCollection<TaskGroup>>( WindowsManager.CreateDialogWindowByViewModelResult("SettingTaskGroupView", new SettingTaskGroupViewModel(), new { TaskModelId=SelectTaskModel.ID,taskGroups= SelectTaskModel.TaskGroups }));
+                  SelectTaskModel.TaskGroups=JsonHelper.ConvertObject<ObservableCollection<TaskGroup>>(
+                      WindowsManager.CreateDialogWindowByViewModelResult(
+                          "SettingTaskGroupView",
+                      new SettingTaskGroupViewModel(), 
+                      new 
+                      {
+                          TaskModelId=SelectTaskModel.ID,taskGroups= SelectTaskModel.TaskGroups
+                      }
+                      ));
+                  GetSelectTaskDtlAndAttachment(SelectTaskModel);
               }
           });
         #endregion
 
         #region 消息
-        /// <summary>
-        /// 消息注册
-        /// </summary>
-        private void MessengerRegister()
-        {
-            Messenger.Default.Register(this, "CreateNewTask", CreateNewTask);
-        }
+        
+        
 
 
         #endregion

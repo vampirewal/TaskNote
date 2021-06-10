@@ -27,7 +27,7 @@ namespace TaskNote.Core.SimpleMVVM
         public ViewModelBase()
         {
             InitData();
-            
+            MessengerRegister();
         }
         /// <summary>
         /// 判断是不是设计器模式
@@ -75,6 +75,14 @@ namespace TaskNote.Core.SimpleMVVM
         /// </summary>
         /// <param name="obj">传入参数</param>
         public virtual void PassData(object obj)
+        {
+
+        }
+
+        /// <summary>
+        /// 通用消息注册
+        /// </summary>
+        public virtual void MessengerRegister()
         {
 
         }

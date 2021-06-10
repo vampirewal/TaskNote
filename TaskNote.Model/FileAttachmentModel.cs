@@ -37,15 +37,23 @@ namespace TaskNote.Model
         }
 
 
-        private string _ParentGuidId;
-        /// <summary>
-        /// 父文件的guidID
-        /// </summary>
-        [Column("ParentGuidId")]
-        public string ParentGuidId
+        private string _taskModelID;
+        [Display(Name = "关联Task")]
+        [Column("taskModelID")]
+        public string taskModelID
         {
-            get { return _ParentGuidId; }
-            set { _ParentGuidId = value; DoNotify(); }
+            get { return _taskModelID; }
+            set { _taskModelID = value; DoNotify(); }
+        }
+
+
+        private TaskModel _taskModel;
+        [Display(Name = "关联Task")]
+        [Column("taskModel")]
+        public TaskModel taskModel
+        {
+            get { return _taskModel; }
+            set { _taskModel = value; DoNotify(); }
         }
 
         private byte[] _Attachment;

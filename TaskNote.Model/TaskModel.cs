@@ -32,7 +32,6 @@ namespace TaskNote.Model
             Detail = new ObservableCollection<TaskDtlModel>();
             fileAttachmentModels = new ObservableCollection<FileAttachmentModel>();
             TaskGroups = new ObservableCollection<TaskGroup>();
-            TaskDtls = new ObservableCollection<TaskDtlModel>();
         }
 
         #region 属性
@@ -107,8 +106,6 @@ namespace TaskNote.Model
         public ObservableCollection<FileAttachmentModel> fileAttachmentModels { get; set; }
         [NotMapped]
         public ObservableCollection<TaskGroup> TaskGroups { get; set; }
-        [NotMapped]
-        public ObservableCollection<TaskDtlModel> TaskDtls { get; set; }
 
         private int _NoFinishedTaskDtl;
         [NotMapped]
@@ -173,14 +170,14 @@ namespace TaskNote.Model
         }
 
 
-        //private TaskModel _taskModel;
-        //[Display(Name = "关联Task")]
-        //[Column("taskModel")]
-        //public TaskModel taskModel
-        //{
-        //    get { return _taskModel; }
-        //    set { _taskModel = value; DoNotify(); }
-        //}
+        private TaskModel _taskModel;
+        [Display(Name = "关联Task")]
+        [Column("taskModel")]
+        public TaskModel taskModel
+        {
+            get { return _taskModel; }
+            set { _taskModel = value; DoNotify(); }
+        }
 
         private string _TaskGroupID;
         [Display(Name = "关联任务组")]

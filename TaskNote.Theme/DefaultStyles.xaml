@@ -24,6 +24,7 @@
             <converter:DoubletoGridConvert x:Key="DoubletoGridConvert" />
             <converter:TaskGroupId2ColorConverter x:Key="TaskGroupId2ColorConverter" />
             <converter:TaskGroupID2TaskGroupNameConverter x:Key="TaskGroupID2TaskGroupNameConverter" />
+            <converter:EnumValueConverter x:Key="EnumValueConverter" />
         </ResourceDictionary>
         <ResourceDictionary>
             <FontFamily x:Key="youyuan">

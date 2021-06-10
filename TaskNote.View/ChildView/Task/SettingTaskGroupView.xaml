@@ -195,10 +195,34 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
+                        <DataGridTemplateColumn Width="1*" Header="是否属于完成标识">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        IsChecked="{Binding IsFinishedTag, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                        <CheckBox.Style>
+                                            <Style BasedOn="{StaticResource CheckBoxBaseStyle}" TargetType="CheckBox">
+                                                <Setter Property="IsEnabled" Value="True" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding taskGroupType}" Value="SystemCreate">
+                                                        <Setter Property="IsEnabled" Value="False" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </CheckBox.Style>
+                                    </CheckBox>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
                         <DataGridTemplateColumn Width="1*" Header="操作">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Button
+                                        Command="{Binding DataContext.DeleteTaskGroupCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding}"
                                         Content="删除"
                                         IsEnabled="{Binding IsCanDelete}"
                                         Style="{DynamicResource NewButtonDanger}" />
@@ -214,6 +238,7 @@
                 Grid.Row="3"
                 Margin="10,0"
                 HorizontalAlignment="Right"
+                Command="{Binding SaveAllTaskGroupCommand}"
                 Content="保存"
                 Style="{StaticResource ButtonSuccess}" />
         </Grid>

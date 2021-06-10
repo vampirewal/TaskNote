@@ -330,7 +330,7 @@
                                         VerticalAlignment="Center"
                                         FontFamily="../Assets/Fonts/#iconfont"
                                         FontSize="{TemplateBinding FontSize}"
-                                        Foreground="{StaticResource DefaultButtonColor}"
+                                        Foreground="{TemplateBinding Foreground}"
                                         Text="{TemplateBinding Tag}" />
                                     <TextBlock
                                         Name="text"
@@ -338,7 +338,7 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         FontSize="{TemplateBinding FontSize}"
-                                        Foreground="{StaticResource DefaultButtonColor}"
+                                        Foreground="{TemplateBinding Foreground}"
                                         Text="{TemplateBinding Content}" />
                                 </StackPanel>
 

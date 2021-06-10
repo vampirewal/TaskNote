@@ -51,9 +51,14 @@ namespace TaskNote.ViewModel
         {
             HaveLoginUserName = new ObservableCollection<User>();
             CurrentUser = new User();
-            MessengerRegister();
+            
             GetLoginName();
 
+        }
+
+        public override void MessengerRegister()
+        {
+            Messenger.Default.Register(this, "GetLoginName", GetLoginName);
         }
         #endregion
 
@@ -69,7 +74,18 @@ namespace TaskNote.ViewModel
         #endregion
 
         #region 私有方法
-
+        /// <summary>
+        /// 获取登陆的用户名
+        /// </summary>
+        private void GetLoginName()
+        {
+            HaveLoginUserName.Clear();
+            var current = SqlHelper.GetInfoLst<User>(null).ToList();
+            for (int i = 0; i < current.Count; i++)
+            {
+                HaveLoginUserName.Add(current[i]);
+            }
+        }
         #endregion
 
         #region 命令
@@ -129,28 +145,6 @@ namespace TaskNote.ViewModel
         });
         #endregion
 
-        #region 消息
-        /// <summary>
-        /// 消息注册
-        /// </summary>
-        private void MessengerRegister()
-        {
-            Messenger.Default.Register(this, "GetLoginName", GetLoginName);
-        }
-        /// <summary>
-        /// 获取登陆的用户名
-        /// </summary>
-        private void GetLoginName()
-        {
-            HaveLoginUserName.Clear();
-            var current = SqlHelper.GetInfoLst<User>(null).ToList();
-            for (int i = 0; i < current.Count; i++)
-            {
-                HaveLoginUserName.Add(current[i]);
-            }
-        }
-
         
-        #endregion
     }
 }

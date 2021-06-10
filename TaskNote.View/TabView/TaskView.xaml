@@ -31,6 +31,11 @@
             <RowDefinition Height="10" />
             <RowDefinition x:Name="bottomInfo" Height="0" />
         </Grid.RowDefinitions>
+        <Grid.ContextMenu>
+            <ContextMenu>
+                <MenuItem Command="{Binding RefreshCommand}" Header="刷新" />
+            </ContextMenu>
+        </Grid.ContextMenu>
         <DataGrid
             x:Name="TaskList"
             Margin="5,0"
@@ -146,7 +151,11 @@
                                     CommandParameter="{Binding}"
                                     Content="查看详细"
                                     Style="{StaticResource ButtonSuccess}" />
-                                <Button Content="删除" Style="{StaticResource ButtonDanger}" />
+                                <Button
+                                    Command="{Binding DataContext.RecycleBinTaskCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                                    CommandParameter="{Binding}"
+                                    Content="删除"
+                                    Style="{StaticResource ButtonDanger}" />
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -382,7 +391,7 @@
                                     AutoGenerateColumns="False"
                                     Background="Transparent"
                                     HeadersVisibility="All"
-                                    ItemsSource="{Binding SelectTaskModel.TaskDtls}"
+                                    ItemsSource="{Binding SelectTaskModel.Detail}"
                                     RowHeaderWidth="60"
                                     SelectedItem="{Binding SelectedTaskDtlModel, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
                                     SelectionMode="Single"

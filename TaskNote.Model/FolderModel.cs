@@ -51,13 +51,22 @@ namespace TaskNote.Model
             set { _ParentId = value; DoNotify(); }
         }
 
-        private string _UserId;
-        [Display(Name = "用户ID")]
-        [Column("UserId")]
-        public string UserId
+        private string _UserID;
+        [Display(Name = "关联用户")]
+        [Column("User")]
+        public string UserID
         {
-            get { return _UserId; }
-            set { _UserId = value; DoNotify(); }
+            get { return _UserID; }
+            set { _UserID = value; DoNotify(); }
+        }
+
+        private User _User;
+        [Display(Name = "关联用户")]
+        [Column("User")]
+        public User User
+        {
+            get { return _User; }
+            set { _User = value; DoNotify(); }
         }
 
 

@@ -51,14 +51,14 @@ namespace TaskNote.Model
         //    set { _UserId = value; DoNotify(); }
         //}
 
-        //private TaskModel _taskModel;
-        //[Display(Name = "关联Task")]
-        //[Column("taskModel")]
-        //public TaskModel taskModel
-        //{
-        //    get { return _taskModel; }
-        //    set { _taskModel = value; DoNotify(); }
-        //}
+        private TaskModel _taskModel;
+        [Display(Name = "关联Task")]
+        [Column("taskModel")]
+        public TaskModel taskModel
+        {
+            get { return _taskModel; }
+            set { _taskModel = value; DoNotify(); }
+        }
 
         private string _GroupName;
         [Display(Name = "任务组名称")]
@@ -93,23 +93,42 @@ namespace TaskNote.Model
         public int GroupSort
         {
             get { return _GroupSort; }
-            set { _GroupSort = value; }
+            set { _GroupSort = value; DoNotify(); }
         }
+
+        private bool _IsFinishedTag;
+        [Display(Name = "是否完成标记")]
+        [Column("IsFinishedTag")]
+        public bool IsFinishedTag
+        {
+            get { return _IsFinishedTag; }
+            set { _IsFinishedTag = value; }
+        }
+
+        private TaskGroupType _taskGroupType;
+        [Display(Name = "任务组类型")]
+        [Column("taskGroupType")]
+        public TaskGroupType taskGroupType
+        {
+            get { return _taskGroupType; }
+            set { _taskGroupType = value; DoNotify(); }
+        }
+
+
+
 
         [NotMapped]
         public ObservableCollection<TaskDtlModel> taskDtlModels { get; set; }
         #endregion
 
-        #region 公共方法
+        
+    }
 
-        #endregion
-
-        #region 私有方法
-
-        #endregion
-
-        #region 命令
-
-        #endregion
+    public enum TaskGroupType
+    {
+        [Display(Name ="系统创建")]
+        SystemCreate=0,
+        [Display(Name = "用户创建")]
+        CustomCreate =1
     }
 }
