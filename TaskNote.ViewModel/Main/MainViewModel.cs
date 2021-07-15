@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -74,7 +75,6 @@ namespace TaskNote.ViewModel
 
         }
         #endregion
-
 
         #region 属性
         public bool IsLeftPopupOpen { get; set; } = false;
@@ -277,6 +277,14 @@ namespace TaskNote.ViewModel
               WindowsManager.CreateDialogWindowByViewModelResult("RecycleBinView", new RecycleBinViewModel());
           });
 
+        public RelayCommand<TaskModel> LookTaskInfoCommand => new RelayCommand<TaskModel>((t) =>
+          {
+              if (t!=null)
+              {
+                  Messenger.Default.Send("OpenBottomPanel", t);
+              }
+              
+          });
         #endregion
 
         #region 消息

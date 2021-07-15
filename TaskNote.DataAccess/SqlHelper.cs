@@ -73,7 +73,8 @@ namespace TaskNote.DataAccess
         {
             using(TaskNoteDataAccess task=new TaskNoteDataAccess())
             {
-                task.Entry<T>(t).State = EntityState.Added;
+                //task.Entry<T>(t).State = EntityState.Added;
+                task.AddAsync(t);
                 task.SaveChangesAsync();
             }
         }
@@ -124,17 +125,37 @@ namespace TaskNote.DataAccess
         {
             using (TaskNoteDataAccess task = new TaskNoteDataAccess())
             {
-                foreach (var item in EntityList)
-                {
+                //foreach (var item in EntityList)
+                //{
 
-                    if (task.Entry(item).State == EntityState.Detached)
+                //    if (task.Entry(item).State == EntityState.Detached)
+                //    {
+                //        task.Set<T>().Attach(item);
+                //        task.Entry(item).State = EntityState.Modified;
+                //    }
+
+                //}
+                using(var trans= task.Database.BeginTransaction())
+                {
+                    try
                     {
-                        task.Set<T>().Attach(item);
-                        task.Entry(item).State = EntityState.Modified;
+                        foreach (var item in EntityList)
+                        {
+                            task.Update(item);
+                        }
+
+                        task.SaveChanges();
+                        trans.Commit();
+                    }
+                    catch
+                    {
+
+                        trans.Rollback();
                     }
                 }
                 
-                task.SaveChangesAsync();
+                //task.UpdateRange(EntityList);
+                //task.SaveChangesAsync();
             }
         }
 
@@ -153,8 +174,8 @@ namespace TaskNote.DataAccess
                     return;
                 }
                 //task.Set<T>().Remove(v);
-                task.Entry(v).State = EntityState.Deleted;
-                //task.Remove(v);
+                //task.Entry(v).State = EntityState.Deleted;
+                task.Remove(v);
                 task.SaveChangesAsync();
             } 
         }

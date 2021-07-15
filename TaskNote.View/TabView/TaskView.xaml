@@ -36,132 +36,177 @@
                 <MenuItem Command="{Binding RefreshCommand}" Header="刷新" />
             </ContextMenu>
         </Grid.ContextMenu>
-        <DataGrid
-            x:Name="TaskList"
-            Margin="5,0"
-            AutoGenerateColumns="False"
-            Background="Transparent"
-            HeadersVisibility="All"
-            ItemsSource="{Binding TaskList}"
-            RowHeaderWidth="60"
-            SelectionMode="Single"
-            VerticalScrollBarVisibility="Auto">
-            <DataGrid.Resources>
-                <ResourceDictionary>
-                    <ResourceDictionary.MergedDictionaries>
-                        <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml" />
-                        <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml" />
-                        <ResourceDictionary>
-                            <Style x:Key="TextBlockCenterStyle" TargetType="TextBlock">
-                                <Setter Property="VerticalAlignment" Value="Center" />
-                                <Setter Property="HorizontalAlignment" Value="Center" />
-                            </Style>
-                        </ResourceDictionary>
-                    </ResourceDictionary.MergedDictionaries>
-                </ResourceDictionary>
-            </DataGrid.Resources>
-            <DataGrid.ColumnHeaderStyle>
-                <Style TargetType="DataGridColumnHeader">
-                    <Setter Property="Foreground" Value="White" />
-                    <Setter Property="Background" Value="Transparent" />
-                    <Setter Property="HorizontalAlignment" Value="Center" />
-                </Style>
-            </DataGrid.ColumnHeaderStyle>
-            <DataGrid.CellStyle>
-                <Style TargetType="DataGridCell">
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="DataGridCell">
-                                <Border HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <ContentPresenter />
-                                </Border>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </DataGrid.CellStyle>
-            <DataGrid.Columns>
-                <DataGridTemplateColumn Width="0.7*" Header="任务名称">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBlock Style="{StaticResource CenterTextBlock}" Text="{Binding TaskName}">
-                                <TextBlock.ToolTip>
-                                    <TextBlock Foreground="{StaticResource BaseBackground}" Text="双击可修改" />
-                                </TextBlock.ToolTip>
-                            </TextBlock>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                    <DataGridTemplateColumn.CellEditingTemplate>
-                        <DataTemplate>
-                            <TextBox Text="{Binding TaskName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="LostKeyboardFocus">
-                                        <i:InvokeCommandAction Command="{Binding DataContext.EditTaskCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" CommandParameter="{Binding}" />
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
-                            </TextBox>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellEditingTemplate>
-                </DataGridTemplateColumn>
 
-                <DataGridTextColumn
-                    Width="0.7*"
-                    Binding="{Binding StartTime, StringFormat={}{0:yyyy-MM-dd}}"
-                    Header="开始时间"
-                    IsReadOnly="True" />
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Border>
+                <Border.Resources>
+                    <ResourceDictionary>
+                        <ResourceDictionary.MergedDictionaries>
+                            <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml" />
+                            <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml" />
+                        </ResourceDictionary.MergedDictionaries>
+                    </ResourceDictionary>
+                </Border.Resources>
+                <hc:SearchBar
+                    Name="SearchBarCustomVerify"
+                    Width="200"
+                    Margin="10,5"
+                    HorizontalAlignment="Right"
+                    hc:InfoElement.Placeholder="可输入任务名/内容"
+                    Command="{Binding SearchCommand}"
+                    CommandParameter="{Binding Text, RelativeSource={RelativeSource Self}}"
+                    ShowClearButton="True"
+                    Style="{StaticResource SearchBarPlus}"
+                    ToolTip="可模糊搜索" />
+            </Border>
 
-                <DataGridTextColumn
-                    Width="0.7*"
-                    Binding="{Binding EndTime, StringFormat={}{0:yyyy-MM-dd}}"
-                    Header="结束时间"
-                    IsReadOnly="True" />
 
-                <DataGridTextColumn
-                    Width="0.8*"
-                    Binding="{Binding NoFinishedTaskDtl}"
-                    Header="未完成任务明细数"
-                    IsReadOnly="True" />
-                <DataGridTextColumn
-                    Width="0.8*"
-                    Binding="{Binding FinishedTaskDtl}"
-                    Header="已完成任务明细数"
-                    IsReadOnly="True" />
 
-                <DataGridTemplateColumn Width="1*" Header="操作">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <Button
-                                    Margin="5,0"
-                                    Command="{Binding DataContext.IsImportantCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
-                                    CommandParameter="{Binding}"
-                                    Content="关注"
-                                    Style="{StaticResource ButtonSuccess}"
-                                    Visibility="{Binding IsImportant, Converter={StaticResource Boolean2VisibilityReConverter}}" />
-                                <Button
-                                    Margin="5,0"
-                                    Command="{Binding DataContext.IsImportantCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
-                                    CommandParameter="{Binding}"
-                                    Content="取消关注"
-                                    Style="{StaticResource ButtonDanger}"
-                                    Visibility="{Binding IsImportant, Converter={StaticResource Boolean2VisibilityConverter}}" />
-                                <Button
-                                    Margin="5,0"
-                                    Command="{Binding DataContext.LookTaskInfoCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
-                                    CommandParameter="{Binding}"
-                                    Content="查看详细"
-                                    Style="{StaticResource ButtonSuccess}" />
-                                <Button
-                                    Command="{Binding DataContext.RecycleBinTaskCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
-                                    CommandParameter="{Binding}"
-                                    Content="删除"
-                                    Style="{StaticResource ButtonDanger}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
+            <DataGrid
+                x:Name="TaskList"
+                Grid.Row="1"
+                Margin="5,0"
+                AutoGenerateColumns="False"
+                Background="Transparent"
+                HeadersVisibility="All"
+                ItemsSource="{Binding TaskList}"
+                RowHeaderWidth="60"
+                SelectionMode="Single"
+                VerticalScrollBarVisibility="Auto">
+                <DataGrid.Resources>
+                    <ResourceDictionary>
+                        <ResourceDictionary.MergedDictionaries>
+                            <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml" />
+                            <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml" />
+                            <ResourceDictionary>
+                                <Style x:Key="TextBlockCenterStyle" TargetType="TextBlock">
+                                    <Setter Property="VerticalAlignment" Value="Center" />
+                                    <Setter Property="HorizontalAlignment" Value="Center" />
+                                </Style>
+                            </ResourceDictionary>
+                        </ResourceDictionary.MergedDictionaries>
+                    </ResourceDictionary>
+                </DataGrid.Resources>
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Foreground" Value="White" />
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="HorizontalAlignment" Value="Center" />
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+                <DataGrid.CellStyle>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="DataGridCell">
+                                    <Border HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <ContentPresenter />
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </DataGrid.CellStyle>
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Width="0.7*" Header="任务名称">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Style="{StaticResource CenterTextBlock}" Text="{Binding TaskName}">
+                                    <TextBlock.ToolTip>
+                                        <TextBlock Foreground="{StaticResource BaseBackground}" Text="双击可修改" />
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding TaskName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="LostKeyboardFocus">
+                                            <i:InvokeCommandAction Command="{Binding DataContext.EditTaskCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" CommandParameter="{Binding}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </TextBox>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTextColumn
+                        Width="0.7*"
+                        Binding="{Binding StartTime, StringFormat={}{0:yyyy-MM-dd}}"
+                        Header="开始时间"
+                        IsReadOnly="True" />
+
+                    <DataGridTextColumn
+                        Width="0.7*"
+                        Binding="{Binding EndTime, StringFormat={}{0:yyyy-MM-dd}}"
+                        Header="结束时间"
+                        IsReadOnly="True" />
+
+                    <DataGridTextColumn
+                        Width="0.8*"
+                        Binding="{Binding NoFinishedTaskDtl}"
+                        Header="未完成任务明细数"
+                        IsReadOnly="True" />
+                    <DataGridTextColumn
+                        Width="0.8*"
+                        Binding="{Binding FinishedTaskDtl}"
+                        Header="已完成任务明细数"
+                        IsReadOnly="True" />
+
+                    <DataGridTemplateColumn Width="1*" Header="操作">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button
+                                        Margin="5,0"
+                                        Command="{Binding DataContext.IsImportantCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding}"
+                                        Content="关注"
+                                        Style="{StaticResource ButtonSuccess}"
+                                        Visibility="{Binding IsImportant, Converter={StaticResource Boolean2VisibilityReConverter}}" />
+                                    <Button
+                                        Margin="5,0"
+                                        Command="{Binding DataContext.IsImportantCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding}"
+                                        Content="取消关注"
+                                        Style="{StaticResource ButtonDanger}"
+                                        Visibility="{Binding IsImportant, Converter={StaticResource Boolean2VisibilityConverter}}" />
+                                    <Button
+                                        Margin="5,0"
+                                        Command="{Binding DataContext.LookTaskInfoCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding}"
+                                        Content="查看详细"
+                                        Style="{StaticResource ButtonSuccess}" />
+                                    <Button
+                                        Command="{Binding DataContext.RecycleBinTaskCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding}"
+                                        Content="删除"
+                                        Style="{StaticResource ButtonDanger}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <!--<hc:Pagination
+                Grid.Row="1"
+                IsJumpEnabled="True"
+                MaxPageCount="20"
+                PageIndex="{Binding PageIndex}">
+                <hc:Interaction.Triggers>
+                    <hc:EventTrigger EventName="PageUpdated">
+                        <hc:EventToCommand Command="{Binding PageUpdatedCmd}" PassEventArgsToCommand="True" />
+                    </hc:EventTrigger>
+                </hc:Interaction.Triggers>
+            </hc:Pagination>-->
+
+        </Grid>
 
         <Border
             Grid.Row="2"

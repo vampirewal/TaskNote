@@ -94,7 +94,8 @@ namespace TaskNote.ViewModel
         #region 命令
         public RelayCommand SelectColorCommand => new RelayCommand(() =>
           {
-              string colorStr = WindowsManager.CreateDialogWindowByViewModelResult("SelectColorView", new SelectColorViewModel()).ToString();
+              var current = WindowsManager.CreateDialogWindowByViewModelResult("SelectColorView", new SelectColorViewModel());
+              string colorStr = current==null? "#FF4040" : current.ToString();
               taskGroup.GroupBackgroundColor = colorStr;
           });
 

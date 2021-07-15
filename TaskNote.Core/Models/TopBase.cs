@@ -83,7 +83,7 @@ namespace TaskNote.Core.Models
 
         public object GetID()
         {
-            var idpro = this.GetType().GetProperties().Where(x => x.Name.ToLower() == "id").FirstOrDefault();
+            var idpro = this.GetType().GetProperties().Where(x => x.Name.ToLower() == "ID").FirstOrDefault();
             var id = idpro.GetValue(this);
             return id;
         }

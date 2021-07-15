@@ -11,6 +11,7 @@
 //----------------------------------------------------------------*/
 #endregion
 
+using HandyControl.Data;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -51,6 +52,7 @@ namespace TaskNote.ViewModel
         public override void MessengerRegister()
         {
             Messenger.Default.Register(this, "CreateNewTask", CreateNewTask);
+            Messenger.Default.Register<TaskModel>(this, "OpenBottomPanel", OpenBottomPanel);
         }
         #endregion
 
@@ -81,6 +83,32 @@ namespace TaskNote.ViewModel
         public User LoginUserInfo { get; set; }
 
         public ObservableCollection<TaskModel> TaskList { get; set; }
+
+        /// <summary>
+        /// 存储从数据库中获取到的数据
+        /// </summary>
+        //public ObservableCollection<TaskModel> AllTask { get; set; }
+
+        #region 分页
+        ///// <summary>
+        /////     页码
+        ///// </summary>
+        //private int _pageIndex = 1;
+
+        ///// <summary>
+        /////     页码
+        ///// </summary>
+        //public int PageIndex
+        //{
+        //    get => _pageIndex;
+        //    set
+        //    {
+        //        _pageIndex = value;
+        //        DoNotify();
+        //    }
+        //}
+        #endregion
+
         #endregion
 
         #region 公共方法
@@ -99,11 +127,11 @@ namespace TaskNote.ViewModel
             {
                 if (left.CreateTime > right.CreateTime)
                 {
-                    return 1;
+                    return -1;
                 }
                 else
                 {
-                    return -1;
+                    return 1;
                 }
             });
 
@@ -221,6 +249,33 @@ namespace TaskNote.ViewModel
 
             
         }
+
+        /// <summary>
+        /// 打开底部信息面板
+        /// </summary>
+        /// <param name="t"></param>
+        private void OpenBottomPanel(TaskModel t)
+        {
+            SelectTaskModel = t;
+            GetSelectTaskDtlAndAttachment(t);
+            SelectedTaskDtlModel = null;
+            if (IsCollapsed)
+            {
+                //控制界面上的高度
+                GridLengthAnimation grid = new GridLengthAnimation()
+                {
+                    From = new GridLength(0, GridUnitType.Pixel),
+                    To = new GridLength(500, GridUnitType.Pixel),
+                    Duration = new Duration(TimeSpan.FromSeconds(0.3))
+                };
+                Storyboard sb = new Storyboard();
+
+                BottomHeight.BeginAnimation(RowDefinition.HeightProperty, grid);
+                IsCollapsed = !IsCollapsed;
+            }
+
+            GC.Collect();
+        }
         #endregion
 
         #region 命令
@@ -240,25 +295,7 @@ namespace TaskNote.ViewModel
             if (t != null)
             {
                 //给下方的赋值
-                SelectTaskModel = t;
-                GetSelectTaskDtlAndAttachment(t);
-                SelectedTaskDtlModel = null;
-                if (IsCollapsed)
-                {
-                    //控制界面上的高度
-                    GridLengthAnimation grid = new GridLengthAnimation()
-                    {
-                        From = new GridLength(0, GridUnitType.Pixel),
-                        To = new GridLength(500, GridUnitType.Pixel),
-                        Duration = new Duration(TimeSpan.FromSeconds(0.3))
-                    };
-                    Storyboard sb = new Storyboard();
-
-                    BottomHeight.BeginAnimation(RowDefinition.HeightProperty, grid);
-                    IsCollapsed = !IsCollapsed;
-                }
-
-                GC.Collect();
+                OpenBottomPanel(t);
 
             }
         });
@@ -490,7 +527,11 @@ namespace TaskNote.ViewModel
                   if (current!=null&&current.IsFinishedTag==true)
                   {
                       SelectedTaskDtlModel.IsFinished = true;
-                      
+
+                  }
+                  else if(SelectedTaskDtlModel.IsFinished == true)
+                  {
+                      SelectedTaskDtlModel.IsFinished = false;
                   }
                   SqlHelper.Update(SelectedTaskDtlModel);
               }
@@ -512,11 +553,80 @@ namespace TaskNote.ViewModel
                   GetSelectTaskDtlAndAttachment(SelectTaskModel);
               }
           });
+
+
+        ///// <summary>
+        /////     页码改变命令
+        ///// </summary>
+        //public RelayCommand<FunctionEventArgs<int>> PageUpdatedCmd =>new Lazy<RelayCommand<FunctionEventArgs<int>>>(() =>
+        //        new RelayCommand<FunctionEventArgs<int>>(PageUpdated)).Value;
+
+        ///// <summary>
+        /////     页码改变
+        ///// </summary>
+        //private void PageUpdated(FunctionEventArgs<int> info)
+        //{
+        //    //TaskList = _totalDataList.Skip((info.Info - 1) * 20).Take(20).ToList();
+        //    var current = SqlHelper.GetInfoLst<TaskModel>(w => w.UserID == LoginUserInfo.ID && w.IsDelete == false).OrderByDescending(o=>o.CreateTime).Skip((info.Info - 1) * 20).Take(20).ToList();
+
+
+        //}
+
+        /// <summary>
+        /// 搜索按钮命令
+        /// </summary>
+        public RelayCommand<string> SearchCommand => new RelayCommand<string>((s) =>
+          {
+              if (!string.IsNullOrEmpty(s))
+              {
+                  List<TaskModel> current = new List<TaskModel>();
+
+                  foreach (var item in TaskList)
+                  {
+                      if (!string.IsNullOrEmpty( item.TaskName))
+                      {
+                          if (item.TaskName.Contains(s))
+                          {
+                              current.Add(item);
+                              continue;
+                          }
+                      }
+
+                      if (!string.IsNullOrEmpty(item.TaskDes))
+                      {
+                          if (item.TaskDes.Contains(s))
+                          {
+                              current.Add(item);
+                              continue;
+                          }
+                      }
+
+
+                  }
+
+                  if (current.Count>0)
+                  {
+                      TaskList.Clear();
+                      foreach (var item in current)
+                      {
+                          TaskList.Add(item);
+                      }
+                  }
+                  else
+                  {
+                      DialogWindow.Show("未找到符合条件的TASK，请重新输入！", MessageType.Error, WindowsManager.Windows["MainWindow"]);
+                  }
+              }
+              else
+              {
+                  DialogWindow.Show("请输入搜索条件后再点击！", MessageType.Error, WindowsManager.Windows["MainWindow"]);
+              }
+          });
         #endregion
 
         #region 消息
-        
-        
+
+
 
 
         #endregion

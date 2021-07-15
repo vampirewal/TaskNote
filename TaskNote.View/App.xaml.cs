@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using TaskNote.Core.SimpleMVVM;
 using TaskNote.DataAccess;
+using TaskNote.Theme;
 using TaskNote.ViewModel;
 
 namespace TaskNote.View
@@ -27,10 +28,25 @@ namespace TaskNote.View
             }
             MessengerRegister();
 
-            if (Convert.ToBoolean(WindowsManager.CreateDialogWindowByViewModelResult(new LoginView(), new LoginViewModel())))
+            try
             {
-                WindowsManager.CreateWindow("MainView", ShowMode.Dialog, new MainViewModel());
+                if (Convert.ToBoolean(WindowsManager.CreateDialogWindowByViewModelResult(new LoginView(), new LoginViewModel())))
+                {
+                    WindowsManager.CreateWindow("MainView", ShowMode.Dialog, new MainViewModel());
+                }
             }
+            catch (Exception ex)
+            {
+                DialogWindow.ShowDialog($"程序遇到一些问题，请重新启动！\r\n{ex}","很抱歉");
+
+                GlobalDataManager.GetInstance().LoginUserInfo.IsLogin = false;
+                SqlHelper.Update(GlobalDataManager.GetInstance().LoginUserInfo);
+
+                System.Environment.Exit(0);
+                Application.Current.Shutdown();
+            }
+
+            
             
             
         }
