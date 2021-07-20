@@ -369,7 +369,8 @@ namespace TaskNote.ViewModel
                                     taskModelID = SelectTaskModel.ID,
                                     Attachment = byData,
                                     AttachmentType = fileType,
-                                    AttachmentByte = byData.Length / 1024
+                                    AttachmentByte = byData.Length / 1024,
+                                    CreateTime=DateTime.Now
 
                                 };
                                 Application.Current.Dispatcher.Invoke(() =>
